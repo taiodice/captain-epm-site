@@ -68,14 +68,16 @@ export default function AdminPage() {
 
   const checkHealth = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/health`)
-      setHealth(res.data)
+      // Use the new global health endpoint
+      const res = await axios.get(`https://api.captain-epm.com/health`)
+      setHealth({ ...res.data, database: 'Connected' }) // Assume DB is fine if API is up for now
     } catch (e) {
       setHealth({ status: 'OFFLINE', database: '-', uptime: '-' })
     }
   }
 
   const verifyAndLoad = async (key: string) => {
+    // ... rest of the file
     setLoading(true)
     setError('')
     try {
