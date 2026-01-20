@@ -77,18 +77,28 @@ export default function AdminPage() {
 
   const verifyAndLoad = async (key: string) => {
     setLoading(true)
+    setError('')
     try {
       // Direct call to fetch licenses acts as verification
       const res = await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
       setLicenses(res.data)
       setIsAuthenticated(true)
       sessionStorage.setItem('adminKey', key)
-      setError('')
     } catch (e: any) {
       console.error(e)
-      if (e.response?.status === 401) {
-        handleLogout()
-        setError('Invalid Admin Key')
+      if (e.response) {
+        // Server responded with error code
+        if (e.response.status === 401) {
+          handleLogout()
+          setError('Invalid Admin Key')
+        } else {
+          setError(`Server Error: ${e.response.status} ${e.response.statusText}`)
+        }
+      } else if (e.request) {
+        // Request made but no response (Network Error)
+        setError('Network Error: Could not reach backend. Check VPN/Internet.')
+      } else {
+        setError(`Error: ${e.message}`)
       }
     } finally {
       setLoading(false)
