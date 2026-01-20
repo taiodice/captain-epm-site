@@ -16,7 +16,7 @@ export default function Navigation() {
               <span className="text-2xl font-bold text-primary-700">Captain EPM</span>
             </Link>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:space-x-8">
             <Link href="/" className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition">
@@ -33,6 +33,9 @@ export default function Navigation() {
             </Link>
             <Link href="#download" className="bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 transition font-medium">
               Download Trial
+            </Link>
+            <Link href="/admin" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium transition flex items-center gap-1">
+              Log In
             </Link>
           </div>
 
@@ -66,6 +69,9 @@ export default function Navigation() {
             </Link>
             <Link href="#download" className="block px-3 py-2 text-base font-medium bg-primary-600 text-white rounded-md hover:bg-primary-700 text-center">
               Download Trial
+            </Link>
+            <Link href="/admin" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 rounded-md">
+              Log In
             </Link>
           </div>
         </div>

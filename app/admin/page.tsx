@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { 
-  ShieldCheck, 
-  Server, 
-  Database, 
-  Clock, 
-  Plus, 
-  Trash2, 
-  RefreshCw, 
-  LogOut, 
+import {
+  ShieldCheck,
+  Server,
+  Database,
+  Clock,
+  Plus,
+  Trash2,
+  RefreshCw,
+  LogOut,
   Key,
   Users
 } from 'lucide-react'
@@ -119,8 +119,8 @@ export default function AdminPage() {
         status: "Active"
       }
 
-      await axios.post(`${API_BASE}/create`, payload, { 
-        headers: { 'X-Admin-Key': adminKey } 
+      await axios.post(`${API_BASE}/create`, payload, {
+        headers: { 'X-Admin-Key': adminKey }
       })
 
       setShowModal(false)
@@ -168,8 +168,8 @@ export default function AdminPage() {
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Admin Key</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 value={adminKey}
                 onChange={(e) => setAdminKey(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
@@ -177,8 +177,8 @@ export default function AdminPage() {
               />
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
             </div>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition disabled:opacity-50"
             >
@@ -207,45 +207,13 @@ export default function AdminPage() {
   // --- Render Dashboard ---
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Top Bar */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="text-primary-600" />
-            <span className="font-bold text-gray-900">Captain Admin</span>
-          </div>
-          
-          <div className="flex items-center gap-6 text-sm">
-             <div className="hidden md:flex items-center gap-4 text-gray-500 bg-gray-50 px-4 py-1.5 rounded-full">
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${health.status === 'Online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                  API: {health.status}
-                </div>
-                <div className="w-px h-4 bg-gray-300"></div>
-                <div className="flex items-center gap-2">
-                  <Database size={14} /> {health.database}
-                </div>
-                <div className="w-px h-4 bg-gray-300"></div>
-                <div className="flex items-center gap-2">
-                  <Clock size={14} /> {health.uptime}
-                </div>
-             </div>
-             
-             <button onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition">
-               <LogOut size={18} />
-               <span className="hidden sm:inline">Logout</span>
-             </button>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-end mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">License Management</h1>
             <p className="text-gray-500">Manage customer access and subscriptions</p>
           </div>
-          <button 
+          <button
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition shadow-sm"
           >
@@ -284,19 +252,18 @@ export default function AdminPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
-                       lic.status === 'Active' 
-                        ? 'bg-green-50 text-green-700 border-green-200' 
-                        : 'bg-red-50 text-red-700 border-red-200'
-                     }`}>
-                       <span className={`w-1.5 h-1.5 rounded-full ${lic.status === 'Active' ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                       {lic.status}
-                     </span>
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${lic.status === 'Active'
+                      ? 'bg-green-50 text-green-700 border-green-200'
+                      : 'bg-red-50 text-red-700 border-red-200'
+                      }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${lic.status === 'Active' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                      {lic.status}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                       <Users size={14} className="text-gray-400" />
-                       {lic.usedSeats} / {lic.maxSeats}
+                      <Users size={14} className="text-gray-400" />
+                      {lic.usedSeats} / {lic.maxSeats}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
@@ -304,17 +271,17 @@ export default function AdminPage() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
-                      <button 
+                      <button
                         onClick={() => handleReset(lic.licenseKey)}
                         title="Reset Seats"
                         className="p-1.5 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded"
                       >
                         <RefreshCw size={16} />
                       </button>
-                      <button 
-                         onClick={() => handleDelete(lic.licenseKey)}
-                         title="Delete License"
-                         className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
+                      <button
+                        onClick={() => handleDelete(lic.licenseKey)}
+                        title="Delete License"
+                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -340,85 +307,85 @@ export default function AdminPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-lg text-gray-900">Create New License</h3>
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✕
               </button>
             </div>
-            
+
             <div className="p-6 space-y-4">
-               <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">License Key</label>
-                  <div className="relative">
-                    <Key size={16} className="absolute left-3 top-3 text-gray-400"/>
-                    <input 
-                      type="text" 
-                      className="w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                      placeholder="e.g. CORP-2024-X99"
-                      value={newLicense.key}
-                      onChange={(e) => setNewLicense({...newLicense, key: e.target.value})}
-                    />
-                  </div>
-               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">License Key</label>
+                <div className="relative">
+                  <Key size={16} className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="text"
+                    className="w-full pl-9 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    placeholder="e.g. CORP-2024-X99"
+                    value={newLicense.key}
+                    onChange={(e) => setNewLicense({ ...newLicense, key: e.target.value })}
+                  />
+                </div>
+              </div>
 
-               <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Plan Features</label>
-                    <select 
-                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
-                      value={newLicense.plan}
-                      onChange={(e) => setNewLicense({...newLicense, plan: e.target.value})}
-                    >
-                      <option value="Pro,AI">Pro (Individual)</option>
-                      <option value="Enterprise,AI,Audit">Enterprise (Team)</option>
-                      <option value="Ultimate,AI,Audit,Policy">Ultimate (Custom)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Max Seats</label>
-                    <input 
-                      type="number" 
-                      min="1"
-                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                      value={newLicense.seats}
-                      onChange={(e) => setNewLicense({...newLicense, seats: Number(e.target.value)})}
-                    />
-                  </div>
-               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Plan Features</label>
+                  <select
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none bg-white"
+                    value={newLicense.plan}
+                    onChange={(e) => setNewLicense({ ...newLicense, plan: e.target.value })}
+                  >
+                    <option value="Pro,AI">Pro (Individual)</option>
+                    <option value="Enterprise,AI,Audit">Enterprise (Team)</option>
+                    <option value="Ultimate,AI,Audit,Policy">Ultimate (Custom)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Max Seats</label>
+                  <input
+                    type="number"
+                    min="1"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    value={newLicense.seats}
+                    onChange={(e) => setNewLicense({ ...newLicense, seats: Number(e.target.value) })}
+                  />
+                </div>
+              </div>
 
-               <div className="grid grid-cols-2 gap-4">
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-1">Expiration</label>
-                     <input 
-                        type="date" 
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                        value={newLicense.expiry}
-                        onChange={(e) => setNewLicense({...newLicense, expiry: e.target.value})}
-                     />
-                  </div>
-                  <div>
-                     <label className="block text-sm font-medium text-gray-700 mb-1">Customer Email</label>
-                     <input 
-                        type="email" 
-                        className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
-                        placeholder="client@company.com"
-                        value={newLicense.email}
-                        onChange={(e) => setNewLicense({...newLicense, email: e.target.value})}
-                     />
-                  </div>
-               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Expiration</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    value={newLicense.expiry}
+                    onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Customer Email</label>
+                  <input
+                    type="email"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    placeholder="client@company.com"
+                    value={newLicense.email}
+                    onChange={(e) => setNewLicense({ ...newLicense, email: e.target.value })}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3 border-t">
-              <button 
+              <button
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={handleCreate}
                 className="px-4 py-2 bg-primary-600 text-white font-medium hover:bg-primary-700 rounded-lg shadow-sm transition"
               >
