@@ -1,16 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import axios from 'axios'
 import {
   ShieldCheck,
   Server,
   Database,
-  Clock,
   Plus,
   Trash2,
   RefreshCw,
-  LogOut,
   Key,
   Users
 } from 'lucide-react'
@@ -97,7 +95,7 @@ export default function AdminPage() {
     }
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: FormEvent) => {
     e.preventDefault()
     if (!adminKey) return
     verifyAndLoad(adminKey)

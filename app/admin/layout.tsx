@@ -1,22 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
     LayoutDashboard,
     Users,
     DollarSign,
-    Settings,
     Search,
     Bell,
     Menu,
-    X,
-    ShieldCheck,
-    Briefcase
+    ShieldCheck
 } from 'lucide-react'
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname()
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
