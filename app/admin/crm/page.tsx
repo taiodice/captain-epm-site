@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import {
-    ShieldCheck,
     Users,
     UserPlus,
     Mail,
-    Phone,
-    StickyNote,
-    Briefcase
+    StickyNote
 } from 'lucide-react'
+
+// Remove unused variables to satisfy linter
+// import { ShieldCheck, Phone, Briefcase } from 'lucide-react' 
 
 const API_BASE = "https://api.captain-epm.com/api/Admin"
 
@@ -37,7 +37,7 @@ export default function CrmPage() {
     // Data
     const [customers, setCustomers] = useState<Customer[]>([])
     const [leads, setLeads] = useState<Lead[]>([])
-    const [loading, setLoading] = useState(true)
+    // const [loading, setLoading] = useState(true) // Unused state
 
     useEffect(() => {
         const key = sessionStorage.getItem('adminKey')
@@ -50,7 +50,7 @@ export default function CrmPage() {
     }, [])
 
     const loadData = async (key: string) => {
-        setLoading(true)
+        // setLoading(true)
         try {
             // 1. Fetch Licenses to build Customer List
             const res = await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
@@ -61,7 +61,8 @@ export default function CrmPage() {
 
             licenses.forEach(l => {
                 if (!l.email) return
-                const existing = custMap.get(l.email) || {
+                // Explicitly define type to prevent 'never[]' inference on empty array
+                const existing: Customer = custMap.get(l.email) || {
                     email: l.email,
                     licenses: [],
                     totalSeats: 0,
@@ -92,7 +93,7 @@ export default function CrmPage() {
             console.error(e)
             alert("Failed to load CRM data.")
         } finally {
-            setLoading(false)
+            // setLoading(false)
         }
     }
 
