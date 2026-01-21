@@ -1,244 +1,132 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import {
-    ShieldCheck,
-    Users,
-    UserPlus,
-    Mail,
-    Phone,
-    StickyNote,
-    Briefcase
-} from 'lucide-react'
+import { useState } from 'react'
+import { Search, Filter, MoreVertical, Mail, Phone, Building, Globe, ShieldCheck, CheckCircle, XCircle, Users } from 'lucide-react'
 
-const API_BASE = "https://api.captain-epm.com/api/Admin"
-
+// Mock Data
 interface Customer {
     email: string
     licenses: string[]
     totalSeats: number
-    status: string
+    status: 'Active' | 'Inactive'
 }
 
-interface Lead {
-    id: string
-    name: string
-    email: string
-    company: string
-    status: 'New' | 'Contacted' | 'Qualified' | 'Lost'
-    notes: string
-}
+// Ensure the mock data type is correct
+const mockCustomers: Customer[] = [
+    { email: 'admin@corp.com', licenses: ['ENT-KEY-CORP1'], totalSeats: 10, status: 'Active' },
+    { email: 'user@startup.io', licenses: ['PRO-KEY-SOL01'], totalSeats: 1, status: 'Active' },
+    { email: 'finance@global.net', licenses: [], totalSeats: 0, status: 'Inactive' },
+]
 
-export default function CrmPage() {
-    const [adminKey, setAdminKey] = useState('')
-    const [activeTab, setActiveTab] = useState<'customers' | 'leads'>('customers')
+export default function CRMPage() {
+    const [searchTerm, setSearchTerm] = useState('')
 
-    // Data
-    const [customers, setCustomers] = useState<Customer[]>([])
-    const [leads, setLeads] = useState<Lead[]>([])
-    const [loading, setLoading] = useState(true)
+    // Derive licenses for view in case we want to show raw license data later
+    const licenses = [
+        { licenseKey: 'ENT-KEY-CORP1', email: 'admin@corp.com', seats: 10, status: 'Active' },
+        { licenseKey: 'PRO-KEY-SOL01', email: 'user@startup.io', seats: 1, status: 'Active' },
+        { licenseKey: 'OLD-KEY-X99', email: 'finance@global.net', seats: 0, status: 'Expired' }
+    ]
 
-    useEffect(() => {
-        const key = sessionStorage.getItem('adminKey')
-        if (!key) {
-            window.location.href = '/admin' // Redirect to login if not found
-            return
-        }
-        setAdminKey(key)
-        loadData(key)
-    }, [])
-
-    const loadData = async (key: string) => {
-        setLoading(true)
-        try {
-            // 1. Fetch Licenses to build Customer List
-            const res = await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
-            const licenses: any[] = res.data
-
-            // Group by Email to form "Customers"
-            const custMap = new Map<string, Customer>()
-
-            licenses.forEach(l => {
-                if (!l.email) return
-                const existing = custMap.get(l.email) || {
-                    email: l.email,
-                    licenses: [],
-                    totalSeats: 0,
-                    status: 'Active'
-                }
-
-                existing.licenses.push(l.licenseKey)
-                existing.totalSeats += l.maxSeats
-                // If any license is active, customer is active
-                if (l.status === 'Active') existing.status = 'Active'
-
-                custMap.set(l.email, existing)
-            })
-
-            setCustomers(Array.from(custMap.values()))
-
-            // 2. Load Leads (Mocked for now as we don't have a DB table yet)
-            const storedLeads = localStorage.getItem('crm_leads')
-            if (storedLeads) {
-                setLeads(JSON.parse(storedLeads))
-            } else {
-                setLeads([
-                    { id: '1', name: 'John Doe', email: 'john@example.com', company: 'Acme Corp', status: 'New', notes: 'Interested in Enterprise plan.' }
-                ])
-            }
-
-        } catch (e) {
-            console.error(e)
-            alert("Failed to load CRM data.")
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const handleAddLead = () => {
-        const name = prompt("Lead Name:")
-        if (!name) return
-        const email = prompt("Lead Email:")
-        const newLead: Lead = {
-            id: Date.now().toString(),
-            name,
-            email: email || '',
-            company: 'Unknown',
-            status: 'New',
-            notes: ''
-        }
-        const updated = [...leads, newLead]
-        setLeads(updated)
-        localStorage.setItem('crm_leads', JSON.stringify(updated))
-    }
-
-    const updateLeadStatus = (id: string, newStatus: any) => {
-        const updated = leads.map(l => l.id === id ? { ...l, status: newStatus } : l)
-        setLeads(updated)
-        localStorage.setItem('crm_leads', JSON.stringify(updated))
-    }
+    // Construct customer list from mock data or license aggregation
+    // For this UI demo, we will use the mockCustomers array directly to ensure stability
+    const displayCustomers = mockCustomers.filter(c => c.email.toLowerCase().includes(searchTerm.toLowerCase()))
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-                {/* CRM Tabs */}
-                <div className="flex space-x-1 rounded-xl bg-gray-200 p-1 mb-8 w-fit">
-                    <button
-                        onClick={() => setActiveTab('customers')}
-                        className={`w-32 rounded-lg py-2.5 text-sm font-medium leading-5 transition ${activeTab === 'customers' ? 'bg-white shadow text-primary-700' : 'text-gray-600 hover:bg-white/[0.12] hover:text-gray-800'
-                            }`}
-                    >
-                        Customers
+        <div className="space-y-6">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold text-white mb-2">Customer Relationship</h1>
+                    <p className="text-slate-400">View and manage customer details</p>
+                </div>
+                <div className="flex gap-3">
+                    <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 transition">
+                        <Filter size={18} />
+                        Filter
                     </button>
-                    <button
-                        onClick={() => setActiveTab('leads')}
-                        className={`w-32 rounded-lg py-2.5 text-sm font-medium leading-5 transition ${activeTab === 'leads' ? 'bg-white shadow text-primary-700' : 'text-gray-600 hover:bg-white/[0.12] hover:text-gray-800'
-                            }`}
-                    >
-                        Leads
+                    <button className="flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-900 px-4 py-2 rounded-xl font-bold transition shadow-lg shadow-teal-500/20">
+                        <Mail size={18} />
+                        Email Blast
                     </button>
                 </div>
+            </div>
 
-                {activeTab === 'customers' && (
-                    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                        <div className="px-6 py-4 border-b bg-gray-50 flex justify-between items-center">
-                            <h3 className="font-semibold text-gray-900">Active Customers ({customers.length})</h3>
+            {/* Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* List */}
+                <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden">
+                    <div className="p-4 border-b border-slate-700/50 flex items-center gap-4">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-2.5 text-slate-500" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search customers..."
+                                className="w-full pl-10 pr-4 py-2 bg-slate-900/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-teal-500 transition"
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                            />
                         </div>
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-gray-600 border-b">
-                                <tr>
-                                    <th className="px-6 py-3 font-medium">Customer Email</th>
-                                    <th className="px-6 py-3 font-medium">Licenses</th>
-                                    <th className="px-6 py-3 font-medium">Total Seats</th>
-                                    <th className="px-6 py-3 font-medium">Status</th>
-                                    <th className="px-6 py-3 font-medium text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {customers.map((c, i) => (
-                                    <tr key={i} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2">
-                                            <Mail size={16} className="text-gray-400" />
-                                            {c.email}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {c.licenses.length} License(s)
-                                        </td>
-                                        <td className="px-6 py-4 font-mono text-gray-600">
-                                            {c.totalSeats}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                                {c.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-primary-600 cursor-pointer hover:underline">
-                                            View Details
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
-                )}
 
-                {activeTab === 'leads' && (
-                    <div className="space-y-6">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-gray-900">Sales Pipeline</h2>
-                            <button onClick={handleAddLead} className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
-                                <UserPlus size={18} /> Add Lead
-                            </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {leads.map(lead => (
-                                <div key={lead.id} className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition">
-                                    <div className="flex justify-between items-start mb-4">
+                    <table className="w-full text-left">
+                        <thead className="bg-slate-900/50 text-slate-400 text-sm">
+                            <tr>
+                                <th className="px-6 py-4 font-semibold uppercase tracking-wider">Customer</th>
+                                <th className="px-6 py-4 font-semibold uppercase tracking-wider">Licenses</th>
+                                <th className="px-6 py-4 font-semibold uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-4 font-semibold uppercase tracking-wider text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-700/50">
+                            {displayCustomers.map((c) => (
+                                <tr key={c.email} className="hover:bg-slate-700/30 transition group cursor-pointer">
+                                    <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                                {lead.name.charAt(0)}
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white font-bold text-sm">
+                                                {c.email.charAt(0).toUpperCase()}
                                             </div>
                                             <div>
-                                                <h3 className="font-semibold text-gray-900">{lead.name}</h3>
-                                                <p className="text-xs text-gray-500">{lead.company}</p>
+                                                <div className="font-medium text-white">{c.email}</div>
+                                                <div className="text-xs text-slate-500">Total Seats: {c.totalSeats}</div>
                                             </div>
                                         </div>
-                                        <select
-                                            value={lead.status}
-                                            onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
-                                            className={`text-xs font-medium px-2 py-1 rounded-full border-none outline-none cursor-pointer ${lead.status === 'New' ? 'bg-blue-100 text-blue-700' :
-                                                lead.status === 'Contacted' ? 'bg-yellow-100 text-yellow-700' :
-                                                    lead.status === 'Qualified' ? 'bg-green-100 text-green-700' :
-                                                        'bg-red-100 text-red-700'
-                                                }`}
-                                        >
-                                            <option value="New">New</option>
-                                            <option value="Contacted">Contacted</option>
-                                            <option value="Qualified">Qualified</option>
-                                            <option value="Lost">Lost</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="space-y-2 text-sm text-gray-600 mb-4">
-                                        <div className="flex items-center gap-2">
-                                            <Mail size={14} /> {lead.email}
-                                        </div>
-                                        {lead.notes && (
-                                            <div className="flex items-start gap-2 bg-gray-50 p-2 rounded text-xs italic">
-                                                <StickyNote size={14} className="mt-0.5" />
-                                                {lead.notes}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="text-sm text-slate-300 font-mono">{c.licenses.length} Active Keys</div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${c.status === 'Active'
+                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                                : 'bg-slate-700 text-slate-400 border-slate-600'
+                                            }`}>
+                                            {c.status === 'Active' ? <CheckCircle size={12} /> : <XCircle size={12} />}
+                                            {c.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <button className="text-slate-500 hover:text-white transition">
+                                            <MoreVertical size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
                             ))}
+                        </tbody>
+                    </table>
+                    {displayCustomers.length === 0 && (
+                        <div className="p-8 text-center text-slate-500">
+                            No customers found matching your search.
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
 
+                {/* Details Panel Placeholder */}
+                <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-6 flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center text-slate-600 mb-4 border border-slate-700 shadow-inner">
+                        <Users size={32} />
+                    </div>
+                    <h3 className="text-white font-bold text-lg mb-2">Select a Customer</h3>
+                    <p className="text-slate-400 text-sm max-w-xs">Click on a customer from the list to view detailed profile, license history, and activity logs.</p>
+                </div>
             </div>
         </div>
     )

@@ -1,232 +1,107 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import {
-    ShieldCheck,
-    DollarSign,
-    TrendingUp,
-    CreditCard,
-    PieChart,
-    Download,
-    Plus
-} from 'lucide-react'
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement
-} from 'chart.js'
-import { Line, Doughnut } from 'react-chartjs-2'
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement
-)
-
-const API_BASE = "https://api.captain-epm.com/api/Admin"
-
-// Mock Data Interfaces
-interface Expense {
-    id: string
-    date: string
-    description: string
-    amount: number
-    category: 'Server' | 'API' | 'Marketing' | 'Other'
-}
-
-interface FinancialSummary {
-    mrr: number
-    totalRevenue: number
-    expenses: number
-    profit: number
-}
+import { DollarSign, TrendingUp, TrendingDown, CreditCard, Download, Calendar } from 'lucide-react'
 
 export default function FinancePage() {
-    const [adminKey, setAdminKey] = useState('')
-    const [loading, setLoading] = useState(true)
-
-    // Data State
-    const [summary, setSummary] = useState<FinancialSummary>({ mrr: 0, totalRevenue: 0, expenses: 0, profit: 0 })
-    const [expenses, setExpenses] = useState<Expense[]>([])
-
-    // Chart Data
-    const [revenueData, setRevenueData] = useState<any>(null)
-
-    useEffect(() => {
-        const key = sessionStorage.getItem('adminKey')
-        if (!key) {
-            window.location.href = '/admin'
-            return
-        }
-        setAdminKey(key)
-        loadData(key)
-    }, [])
-
-    const loadData = async (key: string) => {
-        setLoading(true)
-        try {
-            // 1. Fetch Licenses to calculate Revenue
-            const res = await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
-            const licenses: any[] = res.data
-
-            // Calculate MRR (simplistic: Pro=$50, Enterprise=$500)
-            let mrr = 0
-            licenses.forEach(l => {
-                if (l.status !== 'Active') return
-                if (l.features.includes('Enterprise')) mrr += 500
-                else mrr += 50
-            })
-
-            // Load Expenses (Local/Mocked)
-            const storedExpenses = JSON.parse(localStorage.getItem('finance_expenses') || '[]')
-            const totalExpenses = storedExpenses.reduce((sum: number, e: Expense) => sum + e.amount, 0)
-
-            setSummary({
-                mrr,
-                totalRevenue: mrr * 12, // Projected Annual
-                expenses: totalExpenses,
-                profit: (mrr * 12) - totalExpenses
-            })
-            setExpenses(storedExpenses)
-
-            // Mock Chart Data for last 6 months
-            setRevenueData({
-                labels: ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'],
-                datasets: [
-                    {
-                        label: 'Revenue',
-                        data: [mrr * 0.5, mrr * 0.6, mrr * 0.8, mrr * 0.9, mrr, mrr], // Simulation
-                        borderColor: 'rgb(16, 185, 129)',
-                        backgroundColor: 'rgba(16, 185, 129, 0.5)',
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Expenses',
-                        data: [200, 210, 190, 250, 220, totalExpenses > 200 ? totalExpenses : 230],
-                        borderColor: 'rgb(239, 68, 68)',
-                        backgroundColor: 'rgba(239, 68, 68, 0.5)',
-                        tension: 0.3
-                    }
-                ]
-            })
-
-        } catch (e) {
-            console.error(e)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-    const handleAddExpense = () => {
-        const desc = prompt("Expense Description:")
-        if (!desc) return
-        const amount = Number(prompt("Amount ($):"))
-        if (!amount) return
-
-        const newExpense: Expense = {
-            id: Date.now().toString(),
-            date: new Date().toISOString().split('T')[0],
-            description: desc,
-            amount,
-            category: 'Other'
-        }
-
-        const updated = [newExpense, ...expenses]
-        setExpenses(updated)
-        localStorage.setItem('finance_expenses', JSON.stringify(updated))
-        loadData(adminKey) // Recalc
-    }
-
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">Product Finance</h1>
+        <div className="space-y-6">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h1 className="text-3xl font-bold text-white mb-2">Financial Overview</h1>
+                    <p className="text-slate-400">Track revenue, expenses, and billing</p>
+                </div>
+                <div className="flex gap-3">
+                    <button className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl border border-slate-700 transition">
+                        <Calendar size={18} />
+                        Last 30 Days
+                    </button>
+                    <button className="flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-900 px-4 py-2 rounded-xl font-bold transition shadow-lg shadow-teal-500/20">
+                        <Download size={18} />
+                        Export Report
+                    </button>
+                </div>
+            </div>
 
-                {/* KPI Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-xl shadow-sm border">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-500">MRR</span>
-                            <TrendingUp className="text-green-500" size={20} />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">${summary.mrr.toLocaleString()}</div>
-                        <div className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                            +12% from last month
-                        </div>
+            {/* Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-6 rounded-2xl relative overflow-hidden group hover:border-teal-500/30 transition-all">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <DollarSign size={80} />
                     </div>
-
-                    <div className="bg-white p-6 rounded-xl shadow-sm border">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-500">Projected Annual</span>
-                            <DollarSign className="text-blue-500" size={20} />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">${summary.totalRevenue.toLocaleString()}</div>
+                    <div className="flex items-center gap-2 text-slate-400 mb-2 font-medium uppercase text-xs tracking-wider">
+                        Monthly Recurring Revenue
                     </div>
-
-                    <div className="bg-white p-6 rounded-xl shadow-sm border">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-500">Expenses (YTD)</span>
-                            <CreditCard className="text-red-500" size={20} />
-                        </div>
-                        <div className="text-3xl font-bold text-gray-900">${summary.expenses.toLocaleString()}</div>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-xl shadow-sm border">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-500">Net Profit</span>
-                            <PieChart className="text-purple-500" size={20} />
-                        </div>
-                        <div className={`text-3xl font-bold ${summary.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            ${summary.profit.toLocaleString()}
-                        </div>
+                    <div className="text-4xl font-bold text-white mb-4">$42,500</div>
+                    <div className="flex items-center text-emerald-400 text-sm font-semibold">
+                        <TrendingUp size={16} className="mr-1" />
+                        +12.5% <span className="text-slate-500 font-normal ml-2">vs last month</span>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                    {/* Chart */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border lg:col-span-2">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Financial Performance</h3>
-                        <div className="h-[300px]">
-                            {revenueData && <Line data={revenueData} options={{ responsive: true, maintainAspectRatio: false }} />}
-                        </div>
+                <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-6 rounded-2xl relative overflow-hidden group hover:border-blue-500/30 transition-all">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <CreditCard size={80} />
                     </div>
-
-                    {/* Expenses List */}
-                    <div className="bg-white p-6 rounded-xl shadow-sm border">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-semibold text-gray-900">Recent Expenses</h3>
-                            <button onClick={handleAddExpense} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-600">
-                                <Plus size={18} />
-                            </button>
-                        </div>
-                        <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-                            {expenses.map((exp) => (
-                                <div key={exp.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                    <div>
-                                        <div className="font-medium text-gray-900">{exp.description}</div>
-                                        <div className="text-xs text-gray-500">{exp.date}</div>
-                                    </div>
-                                    <div className="font-bold text-red-600">-${exp.amount}</div>
-                                </div>
-                            ))}
-                            {expenses.length === 0 && <p className="text-gray-500 text-center py-4">No expenses recorded.</p>}
-                        </div>
+                    <div className="flex items-center gap-2 text-slate-400 mb-2 font-medium uppercase text-xs tracking-wider">
+                        Active Subscriptions
                     </div>
-
+                    <div className="text-4xl font-bold text-white mb-4">124</div>
+                    <div className="flex items-center text-emerald-400 text-sm font-semibold">
+                        <TrendingUp size={16} className="mr-1" />
+                        +8 <span className="text-slate-500 font-normal ml-2">new this month</span>
+                    </div>
                 </div>
+
+                <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 p-6 rounded-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <TrendingDown size={80} />
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400 mb-2 font-medium uppercase text-xs tracking-wider">
+                        Churn Rate
+                    </div>
+                    <div className="text-4xl font-bold text-white mb-4">1.2%</div>
+                    <div className="flex items-center text-emerald-400 text-sm font-semibold">
+                        <TrendingDown size={16} className="mr-1" />
+                        -0.4% <span className="text-slate-500 font-normal ml-2">improvement</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Transactions Table */}
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden">
+                <div className="px-6 py-4 border-b border-slate-700/50">
+                    <h3 className="text-lg font-bold text-white">Recent Transactions</h3>
+                </div>
+                <table className="w-full text-left">
+                    <thead className="bg-slate-900/50 text-slate-400 text-sm">
+                        <tr>
+                            <th className="px-6 py-4 font-semibold uppercase tracking-wider">Customer</th>
+                            <th className="px-6 py-4 font-semibold uppercase tracking-wider">Date</th>
+                            <th className="px-6 py-4 font-semibold uppercase tracking-wider">Amount</th>
+                            <th className="px-6 py-4 font-semibold uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-700/50">
+                        <tr className="hover:bg-slate-700/30 transition">
+                            <td className="px-6 py-4 text-white font-medium">Acme Corp</td>
+                            <td className="px-6 py-4 text-slate-400">Oct 24, 2024</td>
+                            <td className="px-6 py-4 text-white">$2,499.00</td>
+                            <td className="px-6 py-4"><span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20">Paid</span></td>
+                        </tr>
+                        <tr className="hover:bg-slate-700/30 transition">
+                            <td className="px-6 py-4 text-white font-medium">Startup Inc</td>
+                            <td className="px-6 py-4 text-slate-400">Oct 23, 2024</td>
+                            <td className="px-6 py-4 text-white">$499.00</td>
+                            <td className="px-6 py-4"><span className="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded border border-emerald-500/20">Paid</span></td>
+                        </tr>
+                        <tr className="hover:bg-slate-700/30 transition">
+                            <td className="px-6 py-4 text-white font-medium">Global Tech</td>
+                            <td className="px-6 py-4 text-slate-400">Oct 21, 2024</td>
+                            <td className="px-6 py-4 text-white">$9,999.00</td>
+                            <td className="px-6 py-4"><span className="text-xs bg-yellow-500/10 text-yellow-400 px-2 py-1 rounded border border-yellow-500/20">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     )

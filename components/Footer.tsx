@@ -11,7 +11,7 @@ export default function Footer() {
               Your Oracle EPM Command Center. Unify administration, analytics, and AI-powered automation—all within Excel.
             </p>
           </div>
-          
+
           <div>
             <h4 className="text-white font-semibold mb-4">Product</h4>
             <ul className="space-y-2">
@@ -21,7 +21,7 @@ export default function Footer() {
               <li><Link href="#download" className="hover:text-white transition">Download</Link></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
@@ -32,7 +32,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
           <p>&copy; {new Date().getFullYear()} Captain EPM. All rights reserved.</p>
         </div>
