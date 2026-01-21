@@ -13,12 +13,10 @@ import {
   Activity
 } from 'lucide-react'
 
-// Configuration
-const API_BASE = "https://api.captain-epm.com/api/Admin"
-
 interface License {
   licenseKey: string
   email: string
+  tenantName: string
   features: string
   status: string
   usedSeats: number
@@ -26,15 +24,7 @@ interface License {
   expirationDate: string
 }
 
-interface ServerHealth {
-  status: string
-  database: string
-  uptime: string
-}
-
-export default function AdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [adminKey, setAdminKey] = useState('')
+export default function AdminDashboard() {
   const [licenses, setLicenses] = useState<License[]>([])
   const [health, setHealth] = useState<ServerHealth>({ status: '...', database: '...', uptime: '...' })
   const [loading, setLoading] = useState(false)
@@ -286,6 +276,10 @@ export default function AdminPage() {
           <div className="text-3xl font-bold text-white mb-1">{health.uptime}</div>
           <div className="text-sm text-slate-400">Server Uptime</div>
         </div>
+        <Button variant="primary">
+          <Plus className="w-4 h-4 mr-2" />
+          Create License
+        </Button>
       </div>
 
       {/* License Table */}
@@ -394,6 +388,10 @@ export default function AdminPage() {
                   />
                 </div>
               </div>
+            </Card>
+          </StaggerItem>
+        ))}
+      </StaggerChildren>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -458,8 +456,80 @@ export default function AdminPage() {
               </button>
             </div>
           </div>
-        </div>
-      )}
+          
+          {loading ? (
+            <div className="p-12 text-center">
+              <Loader2 className="w-8 h-8 text-seafoam animate-spin mx-auto mb-4" />
+              <p className="text-slate-500">Loading licenses...</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-seafoam/10">
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">License / Customer</th>
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Plan Features</th>
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Seats</th>
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Expiration</th>
+                    <th className="text-left px-5 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {licenses.map((license) => (
+                    <tr key={license.licenseKey} className="border-b border-seafoam/5 hover:bg-seafoam/5 transition-colors">
+                      <td className="px-5 py-4">
+                        <div>
+                          <code className="text-seafoam text-sm bg-seafoam/10 px-2 py-1 rounded">{license.licenseKey}</code>
+                          <div className="text-sm text-slate-500 mt-1">{license.email}</div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {license.features.split(',').map((feature) => (
+                            <span key={feature} className="px-2 py-0.5 text-xs rounded-full bg-ocean/30 text-ocean">
+                              {feature.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                          license.status === 'Active' 
+                            ? 'bg-green-500/20 text-green-400' 
+                            : 'bg-red-500/20 text-red-400'
+                        }`}>
+                          {license.status === 'Active' ? <CheckCircle className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+                          {license.status}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className="text-slate-400">
+                          <Users className="w-4 h-4 inline mr-1" />
+                          {license.usedSeats} / {license.maxSeats}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 text-slate-400">
+                        {new Date(license.expirationDate).toLocaleDateString()}
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="flex gap-2">
+                          <button className="px-3 py-1.5 text-xs rounded-lg border border-orange-500/30 text-orange-400 hover:bg-orange-500/10 transition-colors">
+                            Reset
+                          </button>
+                          <button className="px-3 py-1.5 text-xs rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-colors">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      </FadeIn>
     </div>
   )
 }

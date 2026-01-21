@@ -1,20 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Deep Navigator Theme Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  /* Colors */
+  --color-navy: #0A1628;
+  --color-ocean: #0D9488;
+  --color-seafoam: #5EEAD4;
+  --color-surface: #0F172A;
+  --color-surface-light: #1E293B;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-coral: #F97316;
+  
+  /* Gradients */
+  --gradient-hero: linear-gradient(180deg, #0A1628 0%, #0F172A 60%, #0D9488 100%);
+  --gradient-card: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+  
+  /* Shadows */
+  --shadow-glow: 0 0 20px rgba(94, 234, 212, 0.3);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
+/* Base Styles */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-navy);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Glass Morphism */
+@layer components {
+  .glass {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(94, 234, 212, 0.1);
+  }
+  
+  .glass-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(94, 234, 212, 0.1);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .glass-card:hover {
+    border-color: rgba(94, 234, 212, 0.2);
+    box-shadow: 0 8px 40px rgba(94, 234, 212, 0.1);
+  }
+}
+
+/* Buttons */
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, var(--color-ocean) 0%, var(--color-seafoam) 100%);
+    color: var(--color-navy);
+    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.4);
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(94, 234, 212, 0.5);
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+    background: transparent;
+    border: 1px solid rgba(94, 234, 212, 0.3);
+    color: var(--color-seafoam);
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(94, 234, 212, 0.1);
+    border-color: var(--color-seafoam);
+  }
+}
+
+/* Text Gradient */
 @layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, var(--color-seafoam) 0%, var(--color-ocean) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Noise Overlay */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-ocean);
+}
+
+/* Selection */
+::selection {
+  background: rgba(94, 234, 212, 0.3);
+  color: var(--color-text-primary);
+}
+
+/* Focus States */
+:focus-visible {
+  outline: 2px solid var(--color-seafoam);
+  outline-offset: 2px;
 }

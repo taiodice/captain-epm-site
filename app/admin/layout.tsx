@@ -1,6 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  LogOut,
+  CreditCard,
+  Search,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Plus_Jakarta_Sans } from 'next/font/google'
@@ -21,11 +28,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const pathname = usePathname()
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
-    const navItems = [
-        { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-        { name: 'CRM', href: '/admin/crm', icon: Users },
-        { name: 'Finance', href: '/admin/finance', icon: DollarSign },
-    ]
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const pathname = usePathname()
 
     return (
         <div className={`min-h-screen bg-gradient-to-br from-[#0A1628] via-[#0F172A] to-[#1E293B] flex font-sans text-slate-50 ${jakarta.className}`}>
@@ -113,6 +121,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             placeholder="Search..."
                             className="bg-transparent border-none outline-none text-sm text-slate-300 w-full placeholder-slate-500"
                         />
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+              
+              <li className="mt-auto">
+                <a
+                  href="/"
+                  className="group -mx-2 flex gap-x-3 rounded-lg p-2 text-sm font-semibold leading-6 text-slate-400 hover:bg-white/5 hover:text-white transition-all"
+                >
+                  <LogOut
+                    className="h-6 w-6 shrink-0 text-slate-500 group-hover:text-white"
+                    aria-hidden="true"
+                  />
+                  Back to Website
+                </a>
+              </li>
+              
+              {/* User Profile in Sidebar */}
+              <li className="-mx-6 mt-4 border-t border-seafoam/10 pt-4 px-6 pb-2">
+                 <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-ocean to-seafoam flex items-center justify-center text-navy font-bold text-sm shadow-lg">
+                      A
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -139,5 +172,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 />
             )}
         </div>
-    )
+      </div>
+
+      {/* Main content */}
+      <div className="pl-72">
+        <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between gap-x-4 border-b border-seafoam/10 bg-navy/80 backdrop-blur-md px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+          <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            <form className="relative flex flex-1" action="#" method="GET">
+              <label htmlFor="search-field" className="sr-only">
+                Search
+              </label>
+              <div className="relative w-full max-w-md flex items-center">
+                 <Search
+                  className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-slate-500 pl-2"
+                  aria-hidden="true"
+                />
+                <input
+                  id="search-field"
+                  className="block h-10 w-full bg-surface-light/50 border border-seafoam/10 rounded-lg pl-10 pr-3 py-0 text-slate-300 placeholder:text-slate-500 focus:ring-2 focus:ring-seafoam focus:bg-surface-light sm:text-sm"
+                  placeholder="Search Captain EPM..."
+                  type="search"
+                  name="search"
+                />
+              </div>
+            </form>
+            <div className="flex items-center gap-x-4 lg:gap-x-6">
+              
+              {/* Simplified Header - Removed redundant website links to fix overlap */}
+              
+              <Link
+                href="/" 
+                className="hidden lg:block bg-gradient-to-r from-ocean to-seafoam hover:brightness-110 text-navy font-bold py-2 px-4 rounded-lg text-sm shadow-glow-teal transition-all"
+              >
+                Download Trial
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <main className="py-10">
+          <div className="px-4 sm:px-6 lg:px-8">
+            {children}
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }

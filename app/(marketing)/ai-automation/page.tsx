@@ -1,355 +1,293 @@
-import Link from 'next/link'
-import { Brain, MessageSquare, AlertTriangle, FileText, Sparkles, TrendingUp, Zap, Target } from 'lucide-react'
+'use client'
 
-export default function AIAutomation() {
+import { FadeIn, StaggerChildren, StaggerItem } from '@/components/animations/fade-in'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { WaveDivider } from '@/components/wave-divider'
+import { GradientOrb, FloatingElement } from '@/components/animations/floating'
+import { 
+  Sparkles, 
+  Brain, 
+  Zap, 
+  MessageSquare,
+  AlertTriangle,
+  Lightbulb,
+  TrendingUp,
+  Wand2,
+  HelpCircle,
+  Target,
+  ShieldAlert,
+  Clock,
+  Lock,
+  Server
+} from 'lucide-react'
+
+const aiCapabilities = [
+  {
+    icon: MessageSquare,
+    title: 'Chat with AI',
+    description: 'Ask questions in plain English. Get instant answers about your EPM data, trends, and anomalies.',
+    gradient: 'from-ocean to-seafoam'
+  },
+  {
+    icon: AlertTriangle,
+    title: 'Anomaly Detection',
+    description: 'AI automatically identifies unusual patterns, outliers, and potential data issues.',
+    gradient: 'from-coral to-orange-400'
+  },
+  {
+    icon: Lightbulb,
+    title: 'Automated Insights',
+    description: 'Receive proactive suggestions and actionable insights without asking.',
+    gradient: 'from-seafoam to-ocean'
+  },
+]
+
+const moreFeatures = [
+  { icon: TrendingUp, title: 'Predictive Forecasting', description: 'AI-powered projections based on historical patterns.' },
+  { icon: Wand2, title: 'Smart Suggestions', description: 'Contextual recommendations as you work.' },
+  { icon: HelpCircle, title: 'Natural Language Queries', description: 'Ask complex questions in plain English.' },
+  { icon: Target, title: 'Goal Tracking', description: 'AI monitors progress toward your targets.' },
+  { icon: ShieldAlert, title: 'Risk Detection', description: 'Early warning for potential issues.' },
+  { icon: Clock, title: 'Instant Answers', description: 'Sub-second response times on queries.' },
+]
+
+export default function AIAutomationPage() {
   return (
-    <div className="bg-white">
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-900 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-6">
-              <Brain size={40} />
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">The AI Assistant That Speaks EPM</h1>
-            <p className="text-xl md:text-2xl text-purple-100">
-              Captain EPM doesn't just automate tasks—it understands your data, predicts trends, detects anomalies, and explains insights in plain English.
-            </p>
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-navy via-surface to-surface" />
+        <GradientOrb size={600} color="ocean" className="-top-40 -right-40" />
+        <GradientOrb size={400} color="seafoam" className="bottom-0 -left-40" />
+        
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <FadeIn>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ocean/20 text-seafoam text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4" />
+                AI-Powered EPM
+              </div>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                The AI Assistant That{' '}
+                <span className="text-gradient">Speaks EPM</span>
+              </h1>
+              <p className="text-xl text-slate-400 mb-8">
+                Ask questions in plain English. Get instant insights, detect anomalies, 
+                and automate repetitive tasks—all powered by AI that truly understands 
+                Oracle EPM.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Button variant="primary" size="lg">
+                  Try AI Features Free
+                </Button>
+                <Button variant="secondary" size="lg">
+                  Watch Demo
+                </Button>
+              </div>
+            </FadeIn>
+
+            {/* AI Chat Preview */}
+            <FadeIn delay={0.3}>
+              <FloatingElement delay={0.5}>
+                <Card className="p-6" glow>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-ocean to-seafoam flex items-center justify-center">
+                      <Brain className="w-5 h-5 text-navy" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-100">Captain AI</div>
+                      <div className="text-xs text-slate-500">Always ready to help</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-end">
+                      <div className="bg-ocean/30 rounded-2xl rounded-br-md px-4 py-3 max-w-xs">
+                        <p className="text-sm text-slate-200">
+                          Why is Q3 revenue down compared to forecast?
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-ocean to-seafoam flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-4 h-4 text-navy" />
+                      </div>
+                      <div className="bg-surface-light rounded-2xl rounded-tl-md px-4 py-3">
+                        <p className="text-sm text-slate-300">
+                          Q3 revenue is <span className="text-coral font-medium">12.3% below forecast</span>. 
+                          The primary driver is the APAC region, specifically Japan (-18%) 
+                          and Korea (-15%). 
+                          <span className="text-seafoam"> Would you like me to drill into the product breakdown?</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex items-center gap-2 bg-surface rounded-xl px-4 py-3 border border-seafoam/10">
+                    <input 
+                      type="text" 
+                      placeholder="Ask anything about your data..." 
+                      className="flex-1 bg-transparent text-sm text-slate-300 outline-none placeholder-slate-500"
+                      disabled
+                    />
+                    <Zap className="w-5 h-5 text-seafoam" />
+                  </div>
+                </Card>
+              </FloatingElement>
+            </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* Main Value Proposition */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              AI That Actually Understands Your EPM Data
+      {/* Context-Aware Section */}
+      <section className="py-24 px-6 bg-surface">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              AI That Actually{' '}
+              <span className="text-gradient">Understands</span> Your EPM Data
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Most tools just move data around. Captain EPM uses advanced AI to analyze, predict, and explain—turning raw numbers into actionable intelligence.
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+              Unlike generic AI tools, Captain AI is trained on Oracle EPM concepts, 
+              dimensions, and financial terminology.
             </p>
-          </div>
+          </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="text-center">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="text-purple-600" size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Context-Aware</h3>
-              <p className="text-gray-600">
-                Understands your dimensional structure, business rules, and data relationships
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Zap className="text-indigo-600" size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Lightning Fast</h3>
-              <p className="text-gray-600">
-                Instant analysis on millions of cells—no waiting for slow cloud processing
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-pink-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="text-pink-600" size={28} />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Plain English</h3>
-              <p className="text-gray-600">
-                No complex queries or code—just ask questions like you would a colleague
-              </p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Brain, title: 'Context-Aware', description: 'Understands your specific dimension hierarchies and data structures.' },
+              { icon: Zap, title: 'Lightning Fast', description: 'Sub-second responses on complex analytical queries.' },
+              { icon: MessageSquare, title: 'Plain English', description: 'No EPM jargon required. Just ask naturally.' },
+            ].map((item, i) => (
+              <FadeIn key={item.title} delay={i * 0.1}>
+                <Card className="p-8 text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-ocean to-seafoam flex items-center justify-center mx-auto mb-6 shadow-glow-teal">
+                    <item.icon className="w-7 h-7 text-navy" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-100 mb-3">{item.title}</h3>
+                  <p className="text-slate-400">{item.description}</p>
+                </Card>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Key Capabilities Section */}
-      <section className="py-20 bg-gradient-to-br from-purple-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 text-center mb-16">
-            AI-Powered Capabilities
-          </h2>
+      {/* AI Capabilities */}
+      <section className="py-24 px-6 bg-navy">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">
+              AI-Powered Capabilities
+            </h2>
+            <p className="text-slate-400">Core features that transform how you work with EPM.</p>
+          </FadeIn>
 
-          <div className="space-y-16">
-            {/* Chat with AI */}
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg mb-4">
-                  <MessageSquare className="text-purple-600" size={24} />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">Chat with AI</h3>
-                <p className="text-lg text-gray-600 mb-6">
-                  Ask questions about your data or system health in plain English. Captain EPM's AI understands EPM terminology, dimensional hierarchies, and your specific data context to provide accurate, relevant answers instantly.
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">"What drove the variance in Q4 marketing expenses?"</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">"Which departments are over budget this month?"</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">"Show me the top 10 expense accounts by growth rate"</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-purple-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">"Are there any security permissions that changed recently?"</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-2xl border border-gray-200">
-                <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <div className="flex items-start mb-3">
-                    <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
-                      You
+          <StaggerChildren className="grid md:grid-cols-3 gap-8">
+            {aiCapabilities.map((cap) => {
+              const Icon = cap.icon
+              return (
+                <StaggerItem key={cap.title}>
+                  <Card className="p-8 h-full">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cap.gradient} flex items-center justify-center mb-6 shadow-glow-teal`}>
+                      <Icon className="w-6 h-6 text-navy" />
                     </div>
-                    <p className="text-gray-800 pt-1">What's driving the increase in our EMEA region revenue?</p>
-                  </div>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-4">
-                  <div className="flex items-start">
-                    <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
-                      AI
-                    </div>
-                    <div className="text-gray-800 pt-1">
-                      <p className="mb-2">Analyzing EMEA revenue data...</p>
-                      <p className="mb-2 font-semibold">Key drivers identified:</p>
-                      <ul className="space-y-1 text-sm">
-                        <li>• Germany: +32% YoY (+$2.1M)</li>
-                        <li>• UK: +18% YoY (+$1.3M)</li>
-                        <li>• Product Line "Software": +45%</li>
-                      </ul>
-                      <p className="mt-2 text-sm">The growth is primarily driven by new enterprise software subscriptions in Germany and expanded services revenue in UK.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Anomaly Detection */}
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="order-2 md:order-1 bg-white p-8 rounded-xl shadow-2xl border border-gray-200">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-red-50 border-l-4 border-red-500 rounded">
-                    <div className="flex items-center">
-                      <AlertTriangle className="text-red-600 mr-3" size={20} />
-                      <div>
-                        <p className="font-semibold text-gray-900">Marketing Expenses</p>
-                        <p className="text-sm text-gray-600">3.2σ above normal (+$45K)</p>
-                      </div>
-                    </div>
-                    <span className="text-red-600 font-bold">HIGH</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
-                    <div className="flex items-center">
-                      <AlertTriangle className="text-yellow-600 mr-3" size={20} />
-                      <div>
-                        <p className="font-semibold text-gray-900">Headcount - IT</p>
-                        <p className="text-sm text-gray-600">2.1σ below forecast (-5 FTEs)</p>
-                      </div>
-                    </div>
-                    <span className="text-yellow-600 font-bold">MEDIUM</span>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-green-50 border-l-4 border-green-500 rounded">
-                    <div className="flex items-center">
-                      <Sparkles className="text-green-600 mr-3" size={20} />
-                      <div>
-                        <p className="font-semibold text-gray-900">Sales - East Region</p>
-                        <p className="text-sm text-gray-600">2.8σ above target (+$120K)</p>
-                      </div>
-                    </div>
-                    <span className="text-green-600 font-bold">POSITIVE</span>
-                  </div>
-                </div>
-              </div>
-              <div className="order-1 md:order-2">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-red-100 rounded-lg mb-4">
-                  <AlertTriangle className="text-red-600" size={24} />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">Anomaly Detection</h3>
-                <p className="text-lg text-gray-600 mb-6">
-                  Automatically identify outliers in your financial data using advanced Z-Score analysis. Captain EPM continuously monitors your data and flags unusual patterns before they become problems—saving hours of manual review.
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Statistical outlier detection across all accounts</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Severity scoring (High/Medium/Low risk)</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Historical context and trend analysis</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-red-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Configurable thresholds and alert rules</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Automated Insights */}
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-indigo-100 rounded-lg mb-4">
-                  <FileText className="text-indigo-600" size={24} />
-                </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">Automated Insights</h3>
-                <p className="text-lg text-gray-600 mb-6">
-                  Generate natural language explanations for variances in your spreadsheets automatically. Select any data range and Captain EPM analyzes the patterns, calculates key metrics, and writes the commentary for you—perfect for management reports.
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <span className="text-indigo-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Automated variance commentary generation</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-indigo-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Trend identification and pattern recognition</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-indigo-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Executive summary generation for reports</span>
-                  </li>
-                  <li className="flex items-start">
-                    <span className="text-indigo-600 mr-3 text-xl">✓</span>
-                    <span className="text-gray-700">Customizable tone and detail level</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-white p-8 rounded-xl shadow-2xl border border-gray-200">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="flex items-center mb-4">
-                    <FileText className="text-indigo-600 mr-2" size={20} />
-                    <h4 className="font-bold text-gray-900">Generated Insight</h4>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed text-sm">
-                    <span className="font-semibold">Q4 2024 Performance Summary:</span> Total revenue increased 18% YoY to $12.3M, driven primarily by strong performance in the Software division (+$1.8M, +45%). The EMEA region showed exceptional growth (+32%), while APAC remained flat. Operating expenses increased 12% due to strategic investments in R&D and sales headcount expansion. Net margin improved from 22% to 24% as revenue growth outpaced expense increases.
-                  </p>
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-xs text-gray-500 italic">Generated by Captain EPM AI in 2 seconds</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <h3 className="text-xl font-bold text-slate-100 mb-3">{cap.title}</h3>
+                    <p className="text-slate-400">{cap.description}</p>
+                  </Card>
+                </StaggerItem>
+              )
+            })}
+          </StaggerChildren>
         </div>
       </section>
 
-      {/* Additional AI Features */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-gray-900 text-center mb-16">
-            More AI-Powered Features
-          </h2>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <TrendingUp className="text-purple-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Predictive Forecasting</h3>
-              <p className="text-gray-600">
-                AI-powered forecasting models analyze historical patterns and generate projections with confidence intervals. Understand likely outcomes and plan accordingly.
-              </p>
-            </div>
+      {/* More AI Features Grid */}
+      <section className="py-24 px-6 bg-surface">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-100">
+              More AI-Powered Features
+            </h2>
+          </FadeIn>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <Brain className="text-indigo-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Suggestions</h3>
-              <p className="text-gray-600">
-                Get context-aware suggestions as you work. Captain EPM learns your patterns and recommends next steps, shortcuts, and optimizations.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <Sparkles className="text-pink-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Natural Language Queries</h3>
-              <p className="text-gray-600">
-                Write queries in plain English instead of complex MDX. "Show me top 10 products by revenue growth" becomes a simple conversation.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <Target className="text-green-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Goal Tracking</h3>
-              <p className="text-gray-600">
-                AI monitors your progress toward targets and alerts you when you're off track. Proactive insights help you course-correct before deadlines.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <AlertTriangle className="text-orange-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Risk Detection</h3>
-              <p className="text-gray-600">
-                Identify potential data quality issues, calculation errors, and process bottlenecks before they impact your business decisions.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-              <Zap className="text-yellow-600 mb-4" size={28} />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Instant Answers</h3>
-              <p className="text-gray-600">
-                No more digging through reports. Ask Captain EPM anything about your data and get immediate, accurate answers with supporting details.
-              </p>
-            </div>
-          </div>
+          <StaggerChildren className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {moreFeatures.map((feature) => {
+              const Icon = feature.icon
+              return (
+                <StaggerItem key={feature.title}>
+                  <Card className="p-6 group">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-ocean/20 flex items-center justify-center group-hover:bg-ocean/40 transition-colors">
+                        <Icon className="w-5 h-5 text-seafoam" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-slate-100 mb-1">{feature.title}</h3>
+                        <p className="text-slate-400 text-sm">{feature.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                </StaggerItem>
+              )
+            })}
+          </StaggerChildren>
         </div>
       </section>
 
-      {/* Privacy & Security */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Your Data Stays Private
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Captain EPM's AI runs locally on your machine or your private VPS. Your sensitive financial data never leaves your control. We use enterprise-grade security and comply with all major data protection regulations.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <p className="font-semibold text-gray-900 mb-2">Local Processing</p>
-              <p className="text-sm text-gray-600">AI computations happen on your infrastructure</p>
+      {/* Privacy Section */}
+      <section className="py-24 px-6 bg-navy relative overflow-hidden">
+        <WaveDivider flip className="absolute top-0 left-0 right-0" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <FadeIn>
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ocean to-seafoam flex items-center justify-center mx-auto mb-8 shadow-glow-ocean">
+              <Lock className="w-8 h-8 text-navy" />
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <p className="font-semibold text-gray-900 mb-2">Zero Data Leakage</p>
-              <p className="text-sm text-gray-600">No data sent to external AI services</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Your Data Stays <span className="text-gradient">Private</span>
+            </h2>
+            <p className="text-lg text-slate-400 mb-8">
+              All AI processing happens within your environment. Your sensitive EPM data 
+              never leaves your network. Enterprise-grade security built in.
+            </p>
+            <div className="flex items-center justify-center gap-8 text-slate-500">
+              <div className="flex items-center gap-2">
+                <Server className="w-5 h-5 text-seafoam" />
+                <span>On-Premise Option</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Lock className="w-5 h-5 text-seafoam" />
+                <span>SOC 2 Compliant</span>
+              </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <p className="font-semibold text-gray-900 mb-2">Full Compliance</p>
-              <p className="text-sm text-gray-600">GDPR, SOC 2, and industry standards</p>
-            </div>
-          </div>
+          </FadeIn>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-purple-600 to-indigo-900 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">
-            Experience AI-Powered EPM Management
-          </h2>
-          <p className="text-xl mb-8 text-purple-100">
-            See how Captain EPM's AI transforms your workflow. Start your free trial today—no credit card required.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#" 
-              className="bg-white text-purple-700 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg inline-block"
-            >
-              Try AI Features Free
-            </a>
-            <Link 
-              href="/features" 
-              className="bg-purple-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-600 transition border-2 border-white inline-block"
-            >
-              See All Features
-            </Link>
-          </div>
+      <section className="py-24 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-surface via-navy to-ocean/30" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <FadeIn>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Experience AI-Powered{' '}
+              <span className="text-gradient">EPM Management</span>
+            </h2>
+            <p className="text-xl text-slate-400 mb-10">
+              Start your free trial and discover how AI can transform your Oracle EPM workflow.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button variant="primary" size="lg">
+                Start Free Trial
+              </Button>
+              <Button variant="secondary" size="lg">
+                Schedule Demo
+              </Button>
+            </div>
+          </FadeIn>
         </div>
       </section>
     </div>
