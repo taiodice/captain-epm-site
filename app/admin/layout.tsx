@@ -1,22 +1,21 @@
+'use client'
+
 import {
   LayoutDashboard,
   Users,
   Settings,
   LogOut,
-  Menu,
-  X,
   CreditCard,
   Search,
-  Bell,
-  Target
 } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Logo } from '@/components/logo'
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, current: true },
-  { name: 'CRM', href: '#', icon: Users, current: false },
-  { name: 'Finance', href: '#', icon: CreditCard, current: false },
+const initialNavigation = [
+  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'CRM', href: '/admin/crm', icon: Users },
+  { name: 'Finance', href: '/admin/finance', icon: CreditCard },
 ]
 
 export default function AdminLayout({
@@ -24,11 +23,18 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+
+  // Determine active state dynamicallly
+  const navigation = initialNavigation.map(item => ({
+    ...item,
+    current: pathname === item.href
+  }))
+
   return (
     <div className="min-h-screen bg-navy text-slate-100 font-sans selection:bg-seafoam/30">
       {/* Sidebar */}
       <div className="fixed inset-y-0 z-50 flex w-72 flex-col">
-        {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-surface/50 backdrop-blur-xl border-r border-seafoam/10 px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center gap-2 border-b border-seafoam/10">
             <Logo className="h-8 w-8 text-seafoam" />
@@ -43,7 +49,7 @@ export default function AdminLayout({
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => (
                     <li key={item.name}>
-                      <a
+                      <Link
                         href={item.href}
                         className={`
                           group flex gap-x-3 rounded-lg p-2 text-sm leading-6 font-semibold transition-all duration-200
@@ -58,7 +64,7 @@ export default function AdminLayout({
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -118,15 +124,7 @@ export default function AdminLayout({
             </form>
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               
-              {/* Top links from website */}
-              <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-                <Link href="/" className="hover:text-seafoam transition-colors">Home</Link>
-                <Link href="/features" className="hover:text-seafoam transition-colors">Features</Link>
-                <Link href="/ai-automation" className="hover:text-seafoam transition-colors">AI & Automation</Link>
-                <Link href="#" className="hover:text-seafoam transition-colors">Pricing</Link>
-              </div>
-
-              <div className="h-6 w-px bg-seafoam/10" aria-hidden="true" />
+              {/* Simplified Header - Removed redundant website links to fix overlap */}
               
               <Link
                 href="/" 
@@ -134,10 +132,6 @@ export default function AdminLayout({
               >
                 Download Trial
               </Link>
-
-              <button className="text-sm font-semibold leading-6 text-slate-300 hover:text-white transition-colors">
-                Log In
-              </button>
             </div>
           </div>
         </div>
