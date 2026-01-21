@@ -8,6 +8,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Ocean Theme
+        ocean: {
+          dark: '#0a192f',
+          DEFAULT: '#112240',
+          light: '#1d3557',
+        },
+        teal: {
+          DEFAULT: '#64ffda',
+          dark: '#4fd1c5',
+        },
+        slate: {
+          light: '#ccd6f6',
+          DEFAULT: '#8892b0',
+          dark: '#495670',
+        },
+        // Legacy primary (kept for compatibility)
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',
