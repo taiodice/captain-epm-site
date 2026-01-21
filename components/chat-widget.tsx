@@ -11,9 +11,6 @@ interface Message {
   timestamp: Date
 }
 
-// Configure your n8n webhook URL here
-const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL || ''
-
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
@@ -51,41 +48,30 @@ export function ChatWidget() {
     setIsLoading(true)
 
     try {
-      if (N8N_WEBHOOK_URL) {
-        const response = await fetch(N8N_WEBHOOK_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: userMessage.content,
-            sessionId: 'web-chat-' + Date.now(),
-            timestamp: userMessage.timestamp.toISOString(),
-          }),
-        })
+      // Call our Next.js API route (which proxies to n8n)
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userMessage.content,
+          sessionId: 'web-chat-' + Date.now(),
+          timestamp: userMessage.timestamp.toISOString(),
+        }),
+      })
 
-        if (response.ok) {
-          const data = await response.json()
-          const assistantMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant',
-            content: data.response || data.message || 'I received your message. How else can I help?',
-            timestamp: new Date(),
-          }
-          setMessages((prev) => [...prev, assistantMessage])
-        } else {
-          throw new Error('Failed to get response')
-        }
-      } else {
-        // Demo mode when no webhook configured
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (response.ok) {
+        const data = await response.json()
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: getDemoResponse(userMessage.content),
+          content: data.response || data.message || 'I received your message. How else can I help?',
           timestamp: new Date(),
         }
         setMessages((prev) => [...prev, assistantMessage])
+      } else {
+        throw new Error('Failed to get response')
       }
     } catch (error) {
       const errorMessage: Message = {
@@ -98,20 +84,6 @@ export function ChatWidget() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const getDemoResponse = (input: string): string => {
-    const lowerInput = input.toLowerCase()
-    if (lowerInput.includes('price') || lowerInput.includes('cost')) {
-      return 'Captain EPM offers flexible pricing plans starting from $199/month for Pro users. Would you like me to share more details about our plans?'
-    }
-    if (lowerInput.includes('feature') || lowerInput.includes('what can')) {
-      return 'Captain EPM includes: AI-powered analytics, unified administration, dashboard creation, security drift detection, and job automation. Which feature interests you most?'
-    }
-    if (lowerInput.includes('trial') || lowerInput.includes('demo')) {
-      return 'You can start a 14-day free trial with no credit card required! Just click the "Download Trial" button at the top of the page.'
-    }
-    return 'Thanks for your question! For detailed information, I recommend scheduling a demo with our team or exploring our Features page. Is there anything specific about Captain EPM I can help with?'
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
