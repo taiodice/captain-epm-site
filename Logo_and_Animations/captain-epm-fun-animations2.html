@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Captain EPM - Fun Interactive Animations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #0A1628 0%, #0F172A 50%, #1E293B 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #F8FAFC;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #5EEAD4, #0D9488);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #94A3B8;
+      margin-bottom: 3rem;
+      font-size: 1.125rem;
+    }
+    
+    .animations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .animation-card {
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(94, 234, 212, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    
+    .animation-card:hover {
+      border-color: rgba(94, 234, 212, 0.3);
+    }
+    
+    .animation-name {
+      font-size: 0.875rem;
+      color: #5EEAD4;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .animation-hint {
+      font-size: 0.75rem;
+      color: #64748B;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    
+    .animation-demo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background: rgba(10, 22, 40, 0.5);
+      border-radius: 12px;
+      min-height: 160px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .animation-demo svg {
+      width: 72px;
+      height: 72px;
+    }
+    
+    /* ===== ANIMATION 1: Ocean Waves ===== */
+    .anim-ocean {
+      background: linear-gradient(180deg, rgba(10, 22, 40, 0.8) 0%, rgba(13, 148, 136, 0.1) 100%);
+    }
+    
+    .anim-ocean svg {
+      animation: ocean-bob 3s ease-in-out infinite;
+    }
+    
+    .anim-ocean::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      width: 300%;
+      height: 60%;
+      background: radial-gradient(ellipse at center, rgba(94, 234, 212, 0.2) 0%, transparent 70%);
+      animation: ocean-wave 8s linear infinite;
+    }
+    
+    @keyframes ocean-bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-8px) rotate(-2deg); }
+      50% { transform: translateY(-4px) rotate(0deg); }
+      75% { transform: translateY(-8px) rotate(2deg); }
+    }
+    
+    @keyframes ocean-wave {
+      0% { left: -100%; }
+      100% { left: 0%; }
+    }
+    
+    /* ===== ANIMATION 2: Stormy Seas ===== */
+    .anim-storm:hover svg {
+      animation: storm-rock 0.5s ease-in-out infinite;
+    }
+    
+    .anim-storm:hover::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(94, 234, 212, 0.1) 50%, transparent 70%);
+      animation: lightning 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes storm-rock {
+      0%, 100% { transform: rotate(-8deg) translateY(0); }
+      50% { transform: rotate(8deg) translateY(-5px); }
+    }
+    
+    @keyframes lightning {
+      0%, 90%, 100% { opacity: 0; }
+      95% { opacity: 1; }
+    }
+    
+    /* ===== ANIMATION 3: Sunset Sailing ===== */
+    .anim-sunset {
+      background: linear-gradient(180deg, rgba(237, 137, 54, 0.2) 0%, rgba(94, 234, 212, 0.1) 100%);
+      position: relative;
+    }
+    
+    .anim-sunset::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, rgba(237, 137, 54, 0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: sunset-glow 4s ease-in-out infinite;
+    }
+    
+    .anim-sunset svg {
+      position: relative;
+      z-index: 1;
+      animation: sunset-sail 6s ease-in-out infinite;
+    }
+    
+    @keyframes sunset-glow {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+    }
+    
+    @keyframes sunset-sail {
+      0%, 100% { transform: translateX(-20px); }
+      50% { transform: translateX(20px); }
+    }
+    
+    /* ===== ANIMATION 4: Wind Gusts ===== */
+    .anim-wind:hover .sail-main,
+    .anim-wind:hover .sail-jib {
+      animation: wind-billow 0.8s ease-in-out infinite;
+    }
+    
+    .anim-wind:hover::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: 30%;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(94, 234, 212, 0.6), transparent);
+      animation: wind-blow 1.5s ease-out infinite;
+    }
+    
+    .anim-wind:hover::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      width: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(94, 234, 212, 0.4), transparent);
+      animation: wind-blow 1.5s ease-out 0.3s infinite;
+    }
+    
+    @keyframes wind-billow {
+      0%, 100% { transform: scaleX(1) skewX(0deg); }
+      25% { transform: scaleX(1.1) skewX(3deg); }
+      75% { transform: scaleX(0.95) skewX(-2deg); }
+    }
+    
+    @keyframes wind-blow {
+      0% { transform: translateX(0) scaleX(0); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(30px) scaleX(1); opacity: 0; }
+    }
+    
+    /* ===== ANIMATION 5: Moonlight Reflection ===== */
+    .anim-moonlight {
+      background: linear-gradient(180deg, rgba(10, 22, 40, 0.9) 0%, rgba(30, 41, 59, 0.5) 100%);
+      position: relative;
+    }
+    
+    .anim-moonlight::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      right: 15%;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, rgba(248, 250, 252, 0.8) 0%, rgba(94, 234, 212, 0.3) 50%, transparent 70%);
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(94, 234, 212, 0.3);
+      animation: moon-glow 3s ease-in-out infinite;
+    }
+    
+    .anim-moonlight svg {
+      animation: moonlight-drift 8s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(94, 234, 212, 0.3));
+    }
+    
+    @keyframes moon-glow {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes moonlight-drift {
+      0%, 100% { transform: translateX(-15px) translateY(0); }
+      50% { transform: translateX(15px) translateY(-10px); }
+    }
+    
+    /* ===== ANIMATION 6: Speed Burst ===== */
+    .anim-speed:active svg {
+      animation: speed-zoom 0.6s ease-out;
+    }
+    
+    .anim-speed:active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.8), transparent);
+      animation: speed-trail 0.6s ease-out;
+    }
+    
+    @keyframes speed-zoom {
+      0% { transform: scale(1) translateX(0); }
+      50% { transform: scale(0.8) translateX(-30px); }
+      100% { transform: scale(1.3) translateX(40px); }
+    }
+    
+    @keyframes speed-trail {
+      0% { opacity: 0; transform: scaleX(0); }
+      50% { opacity: 1; transform: scaleX(1); }
+      100% { opacity: 0; transform: scaleX(1.5); }
+    }
+    
+    /* ===== ANIMATION 7: Dive & Surface ===== */
+    .anim-dive:hover svg {
+      animation: dive-surface 2s ease-in-out;
+    }
+    
+    @keyframes dive-surface {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      25% { transform: translateY(60px) rotate(15deg); opacity: 0.3; }
+      50% { transform: translateY(60px) rotate(15deg); opacity: 0.3; }
+      75% { transform: translateY(-10px) rotate(-5deg); opacity: 1; }
+      100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    }
+    
+    /* ===== ANIMATION 8: Spin Anchor ===== */
+    .anim-spin:hover svg {
+      animation: spin-anchor 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes spin-anchor {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(360deg) scale(1.2); }
+      100% { transform: rotate(720deg) scale(1); }
+    }
+    
+    /* ===== ANIMATION 9: Bubble Trail ===== */
+    .anim-bubbles {
+      position: relative;
+    }
+    
+    .anim-bubbles:hover::before,
+    .anim-bubbles:hover::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(94, 234, 212, 0.6);
+      border-radius: 50%;
+      animation: bubbles-rise 2s ease-in infinite;
+    }
+    
+    .anim-bubbles:hover::before {
+      left: 40%;
+      bottom: 20%;
+    }
+    
+    .anim-bubbles:hover::after {
+      left: 60%;
+      bottom: 20%;
+      animation-delay: 0.5s;
+    }
+    
+    @keyframes bubbles-rise {
+      0% { transform: translateY(0) scale(1); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-80px) scale(0.3); opacity: 0; }
+    }
+    
+    /* ===== ANIMATION 10: Ripple Click ===== */
+    .anim-ripple {
+      position: relative;
+      overflow: visible;
+    }
+    
+    .anim-ripple:active::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(94, 234, 212, 0.6);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: ripple-expand 0.8s ease-out;
+    }
+    
+    @keyframes ripple-expand {
+      0% { width: 20px; height: 20px; opacity: 1; }
+      100% { width: 200px; height: 200px; opacity: 0; }
+    }
+    
+    /* ===== ANIMATION 11: Helicopter Spin ===== */
+    .anim-helicopter:hover .sail-main {
+      transform-origin: center;
+      animation: heli-spin 1s linear infinite;
+    }
+    
+    .anim-helicopter:hover svg {
+      animation: heli-lift 2s ease-in-out infinite;
+    }
+    
+    @keyframes heli-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes heli-lift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    /* ===== ANIMATION 12: Earthquake Shake ===== */
+    .anim-shake:hover svg {
+      animation: earthquake 0.5s ease-in-out infinite;
+    }
+    
+    @keyframes earthquake {
+      0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+      10% { transform: translateX(-2px) translateY(1px) rotate(-1deg); }
+      20% { transform: translateX(2px) translateY(-1px) rotate(1deg); }
+      30% { transform: translateX(-2px) translateY(-1px) rotate(-1deg); }
+      40% { transform: translateX(2px) translateY(1px) rotate(1deg); }
+      50% { transform: translateX(-2px) translateY(-1px) rotate(-1deg); }
+      60% { transform: translateX(2px) translateY(1px) rotate(1deg); }
+      70% { transform: translateX(-2px) translateY(-1px) rotate(-1deg); }
+      80% { transform: translateX(2px) translateY(1px) rotate(1deg); }
+      90% { transform: translateX(-2px) translateY(-1px) rotate(-1deg); }
+    }
+    
+    /* ===== ANIMATION 13: 3D Flip ===== */
+    .anim-flip {
+      perspective: 1000px;
+    }
+    
+    .anim-flip:hover svg {
+      animation: flip-3d 0.8s ease-in-out;
+    }
+    
+    @keyframes flip-3d {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    
+    /* ===== ANIMATION 14: Rainbow Sail ===== */
+    .anim-rainbow:hover .sail-main {
+      animation: rainbow-shift 3s linear infinite;
+    }
+    
+    .anim-rainbow:hover .sail-jib {
+      animation: rainbow-shift 3s linear 0.5s infinite;
+    }
+    
+    @keyframes rainbow-shift {
+      0% { fill: #5EEAD4; }
+      20% { fill: #60A5FA; }
+      40% { fill: #C084FC; }
+      60% { fill: #F472B6; }
+      80% { fill: #FB923C; }
+      100% { fill: #5EEAD4; }
+    }
+    
+    /* ===== ANIMATION 15: Elastic Bounce ===== */
+    .anim-elastic:hover svg {
+      animation: elastic-bounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes elastic-bounce {
+      0%, 100% { transform: scale(1) translateY(0); }
+      30% { transform: scale(1.1, 0.9) translateY(0); }
+      50% { transform: scale(0.9, 1.1) translateY(-30px); }
+      70% { transform: scale(1.05, 0.95) translateY(-10px); }
+    }
+    
+    /* ===== ANIMATION 16: Glitch Effect ===== */
+    .anim-glitch:hover svg {
+      animation: glitch 0.3s infinite;
+    }
+    
+    @keyframes glitch {
+      0% { transform: translate(0); filter: hue-rotate(0deg); }
+      20% { transform: translate(-2px, 2px); filter: hue-rotate(90deg); }
+      40% { transform: translate(2px, -2px); filter: hue-rotate(180deg); }
+      60% { transform: translate(-2px, -2px); filter: hue-rotate(270deg); }
+      80% { transform: translate(2px, 2px); filter: hue-rotate(360deg); }
+      100% { transform: translate(0); filter: hue-rotate(0deg); }
+    }
+    
+    /* ===== ANIMATION 17: Heartbeat Pulse ===== */
+    .anim-heartbeat svg {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      10% { transform: scale(1.1); }
+      20% { transform: scale(1); }
+      30% { transform: scale(1.15); }
+      40% { transform: scale(1); }
+    }
+    
+    /* ===== ANIMATION 18: Spiral In/Out ===== */
+    .anim-spiral:hover svg {
+      animation: spiral 1.5s ease-in-out;
+    }
+    
+    @keyframes spiral {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      50% { transform: scale(0) rotate(360deg); opacity: 0; }
+      51% { transform: scale(0) rotate(0deg); opacity: 0; }
+      100% { transform: scale(1) rotate(360deg); opacity: 1; }
+    }
+    
+    /* ===== ANIMATION 19: Jelly Wobble ===== */
+    .anim-jelly:hover svg {
+      animation: jelly 0.8s ease-in-out;
+    }
+    
+    @keyframes jelly {
+      0%, 100% { transform: scale(1, 1); }
+      25% { transform: scale(0.9, 1.1); }
+      50% { transform: scale(1.1, 0.9); }
+      75% { transform: scale(0.95, 1.05); }
+    }
+    
+    /* ===== ANIMATION 20: Firework Burst ===== */
+    .anim-firework:active {
+      position: relative;
+    }
+    
+    .anim-firework:active::before,
+    .anim-firework:active::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #5EEAD4;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+    }
+    
+    .anim-firework:active::before {
+      animation: firework-burst-1 0.6s ease-out;
+    }
+    
+    .anim-firework:active::after {
+      animation: firework-burst-2 0.6s ease-out;
+    }
+    
+    @keyframes firework-burst-1 {
+      0% { transform: translate(0, 0); opacity: 1; box-shadow: 0 0 0 0 #5EEAD4, 0 0 0 0 #5EEAD4, 0 0 0 0 #5EEAD4, 0 0 0 0 #5EEAD4; }
+      100% { 
+        opacity: 0; 
+        box-shadow: 
+          50px 0 0 3px #5EEAD4,
+          -50px 0 0 3px #5EEAD4,
+          0 50px 0 3px #5EEAD4,
+          0 -50px 0 3px #5EEAD4;
+      }
+    }
+    
+    @keyframes firework-burst-2 {
+      0% { transform: translate(0, 0) rotate(45deg); opacity: 1; box-shadow: 0 0 0 0 #0D9488, 0 0 0 0 #0D9488, 0 0 0 0 #0D9488, 0 0 0 0 #0D9488; }
+      100% { 
+        opacity: 0; 
+        transform: rotate(45deg);
+        box-shadow: 
+          35px 35px 0 2px #0D9488,
+          -35px -35px 0 2px #0D9488,
+          35px -35px 0 2px #0D9488,
+          -35px 35px 0 2px #0D9488;
+      }
+    }
+    
+    /* ===== ANIMATION 21: Typewriter Text ===== */
+    .anim-typewriter:hover .wordmark {
+      animation: typewriter 2s steps(10) forwards;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 0;
+      display: inline-block;
+    }
+    
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    
+    /* ===== ANIMATION 22: Compass Spin ===== */
+    .anim-compass svg {
+      animation: compass-spin 8s linear infinite;
+    }
+    
+    @keyframes compass-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ===== ANIMATION 23: Fade Ghost ===== */
+    .anim-ghost:hover svg {
+      animation: ghost-fade 2s ease-in-out infinite;
+    }
+    
+    @keyframes ghost-fade {
+      0%, 100% { opacity: 1; transform: translateY(0); }
+      50% { opacity: 0.3; transform: translateY(-15px); }
+    }
+    
+    /* ===== ANIMATION 24: Bounce Crazy ===== */
+    .anim-bounce:active svg {
+      animation: bounce-crazy 0.6s cubic-bezier(0.28, 0.84, 0.42, 1);
+    }
+    
+    @keyframes bounce-crazy {
+      0% { transform: translateY(0); }
+      20% { transform: translateY(-40px); }
+      40% { transform: translateY(0); }
+      60% { transform: translateY(-20px); }
+      80% { transform: translateY(0); }
+      90% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    
+    /* Combined logo + text for some animations */
+    .has-text {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .has-text svg {
+      width: 56px;
+      height: 56px;
+    }
+    
+    .has-text .wordmark {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    
+    .has-text .captain {
+      color: #F8FAFC;
+    }
+    
+    .has-text .epm {
+      color: #5EEAD4;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Fun & Interactive Animations</h1>
+    <p class="subtitle">24 Creative Animations for the Double Sail Float Logo</p>
+    
+    <div class="animations-grid">
+      
+      <!-- Animation 1 -->
+      <div class="animation-card">
+        <div class="animation-name">1. Ocean Waves</div>
+        <div class="animation-hint">Continuous gentle bobbing</div>
+        <div class="animation-demo anim-ocean">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 2 -->
+      <div class="animation-card">
+        <div class="animation-name">2. Stormy Seas</div>
+        <div class="animation-hint">Hover for lightning & rocking</div>
+        <div class="animation-demo anim-storm">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 3 -->
+      <div class="animation-card">
+        <div class="animation-name">3. Sunset Sailing</div>
+        <div class="animation-hint">Peaceful drifting with sun</div>
+        <div class="animation-demo anim-sunset">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 4 -->
+      <div class="animation-card">
+        <div class="animation-name">4. Wind Gusts</div>
+        <div class="animation-hint">Hover for wind lines</div>
+        <div class="animation-demo anim-wind">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 5 -->
+      <div class="animation-card">
+        <div class="animation-name">5. Moonlight</div>
+        <div class="animation-hint">Night sailing with moon</div>
+        <div class="animation-demo anim-moonlight">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 6 -->
+      <div class="animation-card">
+        <div class="animation-name">6. Speed Burst</div>
+        <div class="animation-hint">Click for zoom effect</div>
+        <div class="animation-demo anim-speed">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 7 -->
+      <div class="animation-card">
+        <div class="animation-name">7. Dive & Surface</div>
+        <div class="animation-hint">Hover to dive underwater</div>
+        <div class="animation-demo anim-dive">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 8 -->
+      <div class="animation-card">
+        <div class="animation-name">8. Spin Anchor</div>
+        <div class="animation-hint">Hover for double spin</div>
+        <div class="animation-demo anim-spin">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 9 -->
+      <div class="animation-card">
+        <div class="animation-name">9. Bubble Trail</div>
+        <div class="animation-hint">Hover for rising bubbles</div>
+        <div class="animation-demo anim-bubbles">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 10 -->
+      <div class="animation-card">
+        <div class="animation-name">10. Ripple Click</div>
+        <div class="animation-hint">Click for ripple effect</div>
+        <div class="animation-demo anim-ripple">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 11 -->
+      <div class="animation-card">
+        <div class="animation-name">11. Helicopter</div>
+        <div class="animation-hint">Hover for rotor spin & lift</div>
+        <div class="animation-demo anim-helicopter">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 12 -->
+      <div class="animation-card">
+        <div class="animation-name">12. Earthquake</div>
+        <div class="animation-hint">Hover for intense shaking</div>
+        <div class="animation-demo anim-shake">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 13 -->
+      <div class="animation-card">
+        <div class="animation-name">13. 3D Flip</div>
+        <div class="animation-hint">Hover for 3D rotation</div>
+        <div class="animation-demo anim-flip">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 14 -->
+      <div class="animation-card">
+        <div class="animation-name">14. Rainbow Sails</div>
+        <div class="animation-hint">Hover for color shift</div>
+        <div class="animation-demo anim-rainbow">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 15 -->
+      <div class="animation-card">
+        <div class="animation-name">15. Elastic Bounce</div>
+        <div class="animation-hint">Hover for springy bounce</div>
+        <div class="animation-demo anim-elastic">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 16 -->
+      <div class="animation-card">
+        <div class="animation-name">16. Glitch Effect</div>
+        <div class="animation-hint">Hover for digital glitch</div>
+        <div class="animation-demo anim-glitch">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 17 -->
+      <div class="animation-card">
+        <div class="animation-name">17. Heartbeat</div>
+        <div class="animation-hint">Continuous pulse rhythm</div>
+        <div class="animation-demo anim-heartbeat">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 18 -->
+      <div class="animation-card">
+        <div class="animation-name">18. Spiral In/Out</div>
+        <div class="animation-hint">Hover for spiral effect</div>
+        <div class="animation-demo anim-spiral">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 19 -->
+      <div class="animation-card">
+        <div class="animation-name">19. Jelly Wobble</div>
+        <div class="animation-hint">Hover for squishy effect</div>
+        <div class="animation-demo anim-jelly">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 20 -->
+      <div class="animation-card">
+        <div class="animation-name">20. Firework Burst</div>
+        <div class="animation-hint">Click for explosion</div>
+        <div class="animation-demo anim-firework">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 21 -->
+      <div class="animation-card">
+        <div class="animation-name">21. Typewriter</div>
+        <div class="animation-hint">Hover for text reveal</div>
+        <div class="animation-demo anim-typewriter">
+          <div class="has-text">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+              <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+              <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+              <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+              <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+              <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+            </svg>
+            <span class="wordmark">
+              <span class="captain">Captain</span><span class="epm">EPM</span>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Animation 22 -->
+      <div class="animation-card">
+        <div class="animation-name">22. Compass Spin</div>
+        <div class="animation-hint">Continuous slow rotation</div>
+        <div class="animation-demo anim-compass">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 23 -->
+      <div class="animation-card">
+        <div class="animation-name">23. Ghost Fade</div>
+        <div class="animation-hint">Hover for apparition effect</div>
+        <div class="animation-demo anim-ghost">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+      <!-- Animation 24 -->
+      <div class="animation-card">
+        <div class="animation-name">24. Bounce Crazy</div>
+        <div class="animation-hint">Click for multi-bounce</div>
+        <div class="animation-demo anim-bounce">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" class="sail-main"/>
+            <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" class="sail-jib"/>
+            <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" stroke-width="2.5"/>
+            <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" class="hull"/>
+            <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3"/>
+            <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" stroke-width="2" fill="none" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</body>
+</html>

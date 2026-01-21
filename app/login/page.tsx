@@ -17,10 +17,10 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // In a real app, we would validate credentials here
     // For now, we just redirect to admin
     router.push('/admin')
@@ -149,7 +149,7 @@ export default function LoginPage() {
 
             <div className="mt-6">
               <Link href="/">
-                <Button variant="outline" className="w-full border-slate-700 hover:bg-slate-800 text-slate-300">
+                <Button variant="secondary" className="w-full border-slate-700 hover:bg-slate-800 text-slate-300">
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   View Features & Pricing
                 </Button>
