@@ -10,17 +10,13 @@ const navigation = {
     { name: 'Features', href: '/features' },
     { name: 'AI & Automation', href: '/ai-automation' },
     { name: 'Pricing', href: '/pricing' },
-    { name: 'Changelog', href: '#' },
   ],
   support: [
     { name: 'Documentation', href: '/docs' },
     { name: 'API Reference', href: '/docs' },
-    { name: 'Help Center', href: '/support' },
-    { name: 'Status', href: '#' },
   ],
   company: [
     { name: 'About', href: '#' },
-    { name: 'Blog', href: '#' },
     { name: 'Contact Us', href: '/contact' },
     { name: 'Privacy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
