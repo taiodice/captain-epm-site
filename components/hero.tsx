@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Button } from './ui/button'
 import { WaveDivider } from './wave-divider'
 import { FadeIn } from './animations/fade-in'
-import { FloatingElement, GradientOrb } from './animations/floating'
+import { GradientOrb } from './animations/floating'
 import { LogoMark } from './logo'
 
 export function Hero() {
@@ -73,21 +73,6 @@ export function Hero() {
             </div>
           </FadeIn>
         </div>
-        
-        {/* Floating UI Preview */}
-        <FloatingElement delay={0.5} className="absolute right-10 top-1/3 hidden lg:block">
-          <div className="glass-card p-6 w-72">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-3 h-3 rounded-full bg-green-500" />
-              <span className="text-sm text-slate-300">System Online</span>
-            </div>
-            <div className="space-y-2">
-              <div className="h-2 bg-seafoam/20 rounded-full w-full" />
-              <div className="h-2 bg-seafoam/40 rounded-full w-3/4" />
-              <div className="h-2 bg-seafoam/30 rounded-full w-1/2" />
-            </div>
-          </div>
-        </FloatingElement>
       </div>
       
       {/* Wave Divider */}
