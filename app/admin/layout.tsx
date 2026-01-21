@@ -13,6 +13,7 @@ import {
   Menu,
   LogOut
 } from 'lucide-react'
+import { AnimatedLogo } from '@/components/animated-logo'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'] })
 
@@ -37,19 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="h-24 flex items-center px-8 border-b border-teal-500/10">
-            <div className="flex items-center gap-3">
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-10 h-10">
-                <path d="M50 18 L50 55 L26 55 Z" fill="#5EEAD4" />
-                <path d="M50 24 L50 52 L68 52 Z" fill="#5EEAD4" opacity="0.6" />
-                <line x1="50" y1="16" x2="50" y2="62" stroke="#5EEAD4" strokeWidth="2.5" />
-                <path d="M20 58 L28 68 L72 68 L80 58 Z" fill="#5EEAD4" />
-                <ellipse cx="50" cy="70" rx="42" ry="4" fill="#5EEAD4" opacity="0.3" />
-                <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" strokeWidth="2" fill="none" opacity="0.5" />
-              </svg>
-              <span className="text-xl font-bold tracking-tight text-slate-100">
-                Captain<span className="text-teal-400">EPM</span>
-              </span>
-            </div>
+            <AnimatedLogo />
           </div>
 
           {/* Nav */}

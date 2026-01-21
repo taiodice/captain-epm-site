@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Logo } from './logo'
+import { AnimatedLogo } from './animated-logo'
 import { Button } from './ui/button'
 
 export const Navigation = () => {
@@ -32,18 +32,14 @@ export const Navigation = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled || isOpen ? 'bg-navy/80 backdrop-blur-md border-b border-seafoam/10' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || isOpen ? 'bg-navy/80 backdrop-blur-md border-b border-seafoam/10' : 'bg-transparent'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <Logo className="h-8 w-8 text-seafoam transition-transform group-hover:rotate-45 duration-700" />
-            <span className="font-bold text-xl tracking-tight text-white group-hover:text-seafoam transition-colors">
-              Captain
-            </span>
+          <Link href="/" className="block">
+            <AnimatedLogo />
           </Link>
 
           {/* Desktop Nav */}
@@ -60,7 +56,7 @@ export const Navigation = () => {
                 </Link>
               ))}
             </div>
-            
+
             <div className="flex items-center gap-4 pl-8 border-l border-white/10">
               <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
                 Log In

@@ -61,6 +61,7 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false)
   const [newLicense, setNewLicense] = useState({
     key: '',
+    tenant: '', // Added tenant field
     plan: 'Pro,AI',
     seats: 1,
     expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
@@ -124,6 +125,7 @@ export default function AdminDashboard() {
     try {
       const payload = {
         licenseKey: newLicense.key,
+        tenantName: newLicense.tenant, // Added tenant to payload
         features: newLicense.plan,
         maxSeats: Number(newLicense.seats),
         expirationDate: newLicense.expiry,
@@ -391,6 +393,18 @@ export default function AdminDashboard() {
                     onChange={(e) => setNewLicense({ ...newLicense, key: e.target.value })}
                   />
                 </div>
+              </div>
+
+              {/* New Tenant Field */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Tenant (Organization)</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                  placeholder="e.g. Acme Corp"
+                  value={newLicense.tenant}
+                  onChange={(e) => setNewLicense({ ...newLicense, tenant: e.target.value })}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">

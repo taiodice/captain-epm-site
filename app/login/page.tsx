@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Logo } from '@/components/logo'
+import { AnimatedLogo } from '@/components/animated-logo'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { Loader2, ArrowLeft } from 'lucide-react'
@@ -35,11 +35,8 @@ export default function LoginPage() {
       </div>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
-        <Link href="/" className="flex justify-center mb-8 group">
-          <div className="flex items-center gap-3">
-            <Logo className="h-12 w-12 text-seafoam group-hover:rotate-45 transition-transform duration-700" />
-            <span className="text-3xl font-bold text-white tracking-tight">Captain</span>
-          </div>
+        <Link href="/" className="flex justify-center mb-8">
+          <AnimatedLogo />
         </Link>
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
           Sign in to your account
