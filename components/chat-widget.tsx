@@ -48,7 +48,6 @@ export function ChatWidget() {
     setIsLoading(true)
 
     try {
-      // Call our Next.js API route (which proxies to n8n)
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -155,18 +154,20 @@ export function ChatWidget() {
               {messages.map((message) => (
                 <motion.div
                   key={message.id}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
                   <div
-                    className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                    className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed ${
                       message.role === 'user'
                         ? 'bg-ocean/30 rounded-br-md text-slate-100'
                         : 'bg-surface-light rounded-bl-md text-slate-300'
                     }`}
                   >
-                    <p className="text-sm">{message.content}</p>
+                    {message.content}
                   </div>
                 </motion.div>
               ))}
