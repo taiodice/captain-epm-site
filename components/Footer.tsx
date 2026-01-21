@@ -2,27 +2,28 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Logo } from './logo'
+import { AnimatedLogo } from '@/components/animated-logo'
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react'
 
 const navigation = {
   product: [
     { name: 'Features', href: '/features' },
     { name: 'AI & Automation', href: '/ai-automation' },
-    { name: 'Pricing', href: '#pricing' },
+    { name: 'Pricing', href: '/pricing' },
     { name: 'Changelog', href: '#' },
   ],
   support: [
-    { name: 'Documentation', href: '#' },
-    { name: 'API Reference', href: '#' },
-    { name: 'Help Center', href: '#' },
+    { name: 'Documentation', href: '/docs' },
+    { name: 'API Reference', href: '/docs' },
+    { name: 'Help Center', href: '/support' },
     { name: 'Status', href: '#' },
   ],
   company: [
     { name: 'About', href: '#' },
     { name: 'Blog', href: '#' },
-    { name: 'Careers', href: '#' },
-    { name: 'Privacy', href: '#' },
+    { name: 'Contact Us', href: '/contact' },
+    { name: 'Privacy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
   ],
   social: [
     {
@@ -42,7 +43,7 @@ const navigation = {
     },
     {
       name: 'Email',
-      href: '#',
+      href: 'mailto:support@captain-epm.com',
       icon: Mail,
     },
   ],
@@ -56,7 +57,7 @@ export function Footer() {
 
   return (
     <footer className="bg-navy border-t border-seafoam/10 relative overflow-hidden" aria-labelledby="footer-heading">
-      
+
       {/* Background glow */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-seafoam/20 to-transparent" />
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-seafoam/5 rounded-full blur-3xl pointer-events-none" />
@@ -67,11 +68,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8">
-            <Link href="/" className="flex items-center gap-2 group">
-              <Logo className="h-8 w-8 text-seafoam transition-transform group-hover:rotate-45 duration-700" />
-              <span className="font-bold text-xl tracking-tight text-white group-hover:text-seafoam transition-colors">
-                Captain
-              </span>
+            <Link href="/" className="block">
+              <AnimatedLogo className="justify-start" />
             </Link>
             <p className="text-sm leading-6 text-slate-400 max-w-sm">
               The all-in-one Excel Add-in for Oracle EPM Cloud. Manage users, build dashboards, and automate workflows significantly faster.
@@ -86,24 +84,47 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
-            <h4 className="text-white font-semibold mb-4">Product</h4>
-            <ul className="space-y-2">
-              <li><Link href="/features" className="hover:text-white transition">Features</Link></li>
-              <li><Link href="/ai-automation" className="hover:text-white transition">AI & Automation</Link></li>
-              <li><Link href="/pricing" className="hover:text-white transition">Pricing</Link></li>
-              <li><Link href="#download" className="hover:text-white transition">Download</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-4">Support</h4>
-            <ul className="space-y-2">
-              <li><Link href="#" className="hover:text-white transition">Documentation</Link></li>
-              <li><Link href="#" className="hover:text-white transition">Contact Us</Link></li>
-              <li><Link href="#" className="hover:text-white transition">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-white transition">Terms of Service</Link></li>
-            </ul>
+          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3 className="text-sm font-semibold leading-6 text-white">Product</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.product.map((item) => (
+                    <li key={item.name}>
+                      <Link href={item.href} className="text-sm leading-6 text-slate-400 hover:text-white transition-colors">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-10 md:mt-0">
+                <h3 className="text-sm font-semibold leading-6 text-white">Support</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.support.map((item) => (
+                    <li key={item.name}>
+                      <Link href={item.href} className="text-sm leading-6 text-slate-400 hover:text-white transition-colors">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3 className="text-sm font-semibold leading-6 text-white">Company</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.company.map((item) => (
+                    <li key={item.name}>
+                      <Link href={item.href} className="text-sm leading-6 text-slate-400 hover:text-white transition-colors">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
