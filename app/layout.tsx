@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import { ReactNode } from 'react' // Import ReactNode
+import { ChatWidget } from '@/components/chat-widget'
+import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   title: 'Captain EPM - Your Oracle EPM Command Center',
@@ -23,6 +24,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ChatWidget />
       </body>
     </html>
   )
