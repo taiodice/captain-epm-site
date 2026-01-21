@@ -1,118 +1,137 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Logo } from './logo'
+import { Github, Twitter, Linkedin, Mail } from 'lucide-react'
 
-const footerLinks = {
+const navigation = {
   product: [
-    { label: 'Features', href: '/features' },
-    { label: 'AI & Automation', href: '/ai-automation' },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'Download', href: '/download' },
+    { name: 'Features', href: '/features' },
+    { name: 'AI & Automation', href: '/ai-automation' },
+    { name: 'Pricing', href: '#pricing' },
+    { name: 'Changelog', href: '#' },
   ],
-  resources: [
-    { label: 'Documentation', href: '/docs' },
-    { label: 'API Reference', href: '/api' },
-    { label: 'Support', href: '/support' },
-    { label: 'Changelog', href: '/changelog' },
+  support: [
+    { name: 'Documentation', href: '#' },
+    { name: 'API Reference', href: '#' },
+    { name: 'Help Center', href: '#' },
+    { name: 'Status', href: '#' },
   ],
   company: [
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Partners', href: '/partners' },
+    { name: 'About', href: '#' },
+    { name: 'Blog', href: '#' },
+    { name: 'Careers', href: '#' },
+    { name: 'Privacy', href: '#' },
   ],
-  legal: [
-    { label: 'Privacy', href: '/privacy' },
-    { label: 'Terms', href: '/terms' },
-    { label: 'License', href: '/license' },
+  social: [
+    {
+      name: 'GitHub',
+      href: '#',
+      icon: Github,
+    },
+    {
+      name: 'Twitter',
+      href: '#',
+      icon: Twitter,
+    },
+    {
+      name: 'LinkedIn',
+      href: '#',
+      icon: Linkedin,
+    },
+    {
+      name: 'Email',
+      href: '#',
+      icon: Mail,
+    },
   ],
 }
 
-export default function Footer() {
+export function Footer() {
+  const pathname = usePathname()
+
+  // Do not render footer on Admin pages or Login page
+  if (pathname?.startsWith('/admin') || pathname === '/login') return null
+
   return (
-    <footer className="bg-surface border-t border-seafoam/10">
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-4">
-              <Logo className="w-10 h-10" />
-              <span className="text-lg font-bold text-slate-100">Captain EPM</span>
+    <footer className="bg-navy border-t border-seafoam/10 relative overflow-hidden" aria-labelledby="footer-heading">
+      
+      {/* Background glow */}
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-seafoam/20 to-transparent" />
+      <div className="absolute -top-40 -right-40 w-96 h-96 bg-seafoam/5 rounded-full blur-3xl pointer-events-none" />
+
+      <h2 id="footer-heading" className="sr-only">
+        Footer
+      </h2>
+      <div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
+        <div className="xl:grid xl:grid-cols-3 xl:gap-8">
+          <div className="space-y-8">
+            <Link href="/" className="flex items-center gap-2 group">
+              <Logo className="h-8 w-8 text-seafoam transition-transform group-hover:rotate-45 duration-700" />
+              <span className="font-bold text-xl tracking-tight text-white group-hover:text-seafoam transition-colors">
+                Captain
+              </span>
             </Link>
-            <p className="text-slate-500 text-sm">
-              Your Oracle EPM Command Center. Built for finance teams who demand more.
+            <p className="text-sm leading-6 text-slate-400 max-w-sm">
+              The all-in-one Excel Add-in for Oracle EPM Cloud. Manage users, build dashboards, and automate workflows significantly faster.
             </p>
-          </div>
-
-          {/* Links */}
-          <div>
-            <h4 className="text-slate-300 font-semibold mb-4">Product</h4>
-            <ul className="space-y-2">
-              {footerLinks.product.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-slate-500 hover:text-seafoam transition-colors text-sm">
-                    {link.label}
-                  </Link>
-                </li>
+            <div className="flex space-x-6">
+              {navigation.social.map((item) => (
+                <a key={item.name} href={item.href} className="text-slate-400 hover:text-seafoam transition-colors">
+                  <span className="sr-only">{item.name}</span>
+                  <item.icon className="h-5 w-5" aria-hidden="true" />
+                </a>
               ))}
-            </ul>
+            </div>
           </div>
-
-          <div>
-            <h4 className="text-slate-300 font-semibold mb-4">Resources</h4>
-            <ul className="space-y-2">
-              {footerLinks.resources.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-slate-500 hover:text-seafoam transition-colors text-sm">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-slate-300 font-semibold mb-4">Company</h4>
-            <ul className="space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-slate-500 hover:text-seafoam transition-colors text-sm">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-slate-300 font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="text-slate-500 hover:text-seafoam transition-colors text-sm">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-16 grid grid-cols-2 gap-8 xl:col-span-2 xl:mt-0">
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3 className="text-sm font-semibold leading-6 text-white">Product</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.product.map((item) => (
+                    <li key={item.name}>
+                      <a href={item.href} className="text-sm leading-6 text-slate-400 hover:text-seafoam transition-colors">
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mt-10 md:mt-0">
+                <h3 className="text-sm font-semibold leading-6 text-white">Support</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.support.map((item) => (
+                    <li key={item.name}>
+                      <a href={item.href} className="text-sm leading-6 text-slate-400 hover:text-seafoam transition-colors">
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3 className="text-sm font-semibold leading-6 text-white">Company</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.company.map((item) => (
+                    <li key={item.name}>
+                      <a href={item.href} className="text-sm leading-6 text-slate-400 hover:text-seafoam transition-colors">
+                        {item.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-seafoam/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-slate-600 text-sm">
-            © {new Date().getFullYear()} Captain EPM. All rights reserved.
+        <div className="mt-16 border-t border-white/10 pt-8 sm:mt-20 lg:mt-24">
+          <p className="text-xs leading-5 text-slate-500">
+            &copy; {new Date().getFullYear()} Captain EPM. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <a href="https://twitter.com" className="text-slate-500 hover:text-seafoam transition-colors">
-              Twitter
-            </a>
-            <a href="https://linkedin.com" className="text-slate-500 hover:text-seafoam transition-colors">
-              LinkedIn
-            </a>
-            <a href="https://github.com" className="text-slate-500 hover:text-seafoam transition-colors">
-              GitHub
-            </a>
-          </div>
         </div>
       </div>
     </footer>
