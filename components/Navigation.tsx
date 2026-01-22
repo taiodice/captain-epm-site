@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Globe } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { AnimatedLogo } from './animated-logo'
 import { Button } from './ui/button'
+import { Locale, i18n } from '@/i18n-config'
 
-export const Navigation = () => {
+export const Navigation = ({ dictionary, lang }: { dictionary: any, lang: Locale }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,61 +23,89 @@ export const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const changeLanguage = (newLocale: string) => {
+    if (!pathname) return
+    const segments = pathname.split('/')
+    segments[1] = newLocale
+    router.push(segments.join('/'))
+  }
+
   // Do not render navigation on Admin pages or Login page
   if (pathname?.startsWith('/admin') || pathname === '/login') return null
 
   const navLinks = [
-    { name: 'Features', href: '/features' },
-    { name: 'AI & Automation', href: '/ai-automation' },
-    { name: 'Pricing', href: '#pricing' },
+    { name: dictionary.navigation.features, href: `/${lang}/features` },
+    { name: dictionary.navigation.ai_automation, href: `/${lang}/ai-automation` },
+    { name: dictionary.navigation.pricing, href: `/${lang}/pricing` },
   ]
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || isOpen ? 'bg-navy/80 backdrop-blur-md border-b border-seafoam/10' : 'bg-transparent'
+      className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-navy/80 backdrop-blur-md border-b border-white/5 py-4' : 'bg-transparent py-6'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="block">
+          <Link href={`/${lang}`} className="block">
             <AnimatedLogo />
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
-            <div className="flex items-center gap-6">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-slate-300 hover:text-seafoam transition-colors relative group"
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-seafoam transition-all group-hover:w-full" />
-                </Link>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-4 pl-8 border-l border-white/10">
-              <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                Log In
+            {navLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-slate-300 hover:text-white transition-colors relative group"
+              >
+                {item.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-seafoam transition-all group-hover:w-full" />
               </Link>
-              <Link href="/">
-                <Button variant="primary" size="sm" className="shadow-glow-teal">
-                  Download Trial
-                </Button>
-              </Link>
-            </div>
+            ))}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Actions */}
+          <div className="hidden md:flex items-center gap-4">
+            {/* Language Switcher */}
+            <div className="relative group">
+              <button className="p-2 text-slate-300 hover:text-white transition-colors flex items-center gap-1">
+                <Globe size={18} />
+                <span className="uppercase text-xs font-bold">{lang}</span>
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-32 bg-surface border border-white/10 rounded-xl shadow-xl overflow-hidden hidden group-hover:block">
+                {i18n.locales.map((locale) => (
+                  <button
+                    key={locale}
+                    onClick={() => changeLanguage(locale)}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-white/5 transition-colors ${lang === locale ? 'text-seafoam' : 'text-slate-400'}`}
+                  >
+                    {locale === 'en' ? 'English' :
+                      locale === 'es' ? 'Español' :
+                        locale === 'pt' ? 'Português' :
+                          locale === 'fr' ? 'Français' :
+                            locale === 'it' ? 'Italiano' :
+                              'Deutsch'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Link href={`/${lang}/login`} className="text-sm font-medium text-white hover:text-seafoam transition-colors">
+              {dictionary.navigation.log_in}
+            </Link>
+            <Button variant="primary" size="sm">
+              {dictionary.navigation.download_trial}
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-slate-300 hover:text-white p-2"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
@@ -88,32 +118,41 @@ export const Navigation = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-navy border-b border-seafoam/10 overflow-hidden"
+            className="md:hidden bg-navy border-b border-white/5 overflow-hidden"
           >
-            <div className="px-4 py-4 space-y-4">
-              {navLinks.map((link) => (
+            <div className="px-4 py-8 space-y-6">
+              {navLinks.map((item) => (
                 <Link
-                  key={link.name}
-                  href={link.href}
+                  key={item.href}
+                  href={item.href}
+                  className="block text-lg font-medium text-slate-300 hover:text-white"
                   onClick={() => setIsOpen(false)}
-                  className="block text-base font-medium text-slate-300 hover:text-seafoam pl-2 border-l-2 border-transparent hover:border-seafoam transition-all"
                 >
-                  {link.name}
+                  {item.name}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-white/10 space-y-3">
+              <div className="pt-6 border-t border-white/5 space-y-4">
+                <div className="flex gap-4 overflow-x-auto pb-2">
+                  {i18n.locales.map((locale) => (
+                    <button
+                      key={locale}
+                      onClick={() => changeLanguage(locale)}
+                      className={`px-3 py-1 rounded-full text-sm border ${lang === locale ? 'border-seafoam text-seafoam' : 'border-white/10 text-slate-400'}`}
+                    >
+                      {locale.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
                 <Link
-                  href="/login"
+                  href={`/${lang}/login`}
+                  className="block text-center text-slate-300 hover:text-white py-2"
                   onClick={() => setIsOpen(false)}
-                  className="block w-full text-center py-2 text-slate-300 hover:text-white hover:bg-white/5 rounded-lg"
                 >
-                  Log In
+                  {dictionary.navigation.log_in}
                 </Link>
-                <Link href="/" onClick={() => setIsOpen(false)} className="block">
-                  <Button className="w-full justify-center shadow-glow-teal">
-                    Download Trial
-                  </Button>
-                </Link>
+                <Button className="w-full" variant="primary">
+                  {dictionary.navigation.download_trial}
+                </Button>
               </div>
             </div>
           </motion.div>

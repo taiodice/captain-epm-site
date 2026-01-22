@@ -7,7 +7,7 @@ import { FadeIn } from './animations/fade-in'
 import { GradientOrb } from './animations/floating'
 import { LogoMark } from './logo'
 
-export function Hero() {
+export function Hero({ dictionary }: { dictionary: any }) {
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
       {/* Background */}
@@ -27,25 +27,24 @@ export function Hero() {
 
           <FadeIn delay={0.3}>
             <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
-              Your Oracle EPM{' '}
-              <span className="text-gradient">Command Center</span>
+              {dictionary.hero.title_prefix}{' '}
+              <span className="text-gradient">{dictionary.hero.title_highlight}</span>
             </h1>
           </FadeIn>
 
           <FadeIn delay={0.4}>
             <p className="text-xl md:text-2xl text-slate-400 mb-10 max-w-2xl">
-              Unify administration, analytics, and AI-powered automation—all within Excel.
-              Control your Oracle EPM environment faster, smarter, and with unprecedented insight.
+              {dictionary.hero.description}
             </p>
           </FadeIn>
 
           <FadeIn delay={0.5}>
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" size="lg">
-                Download Free Trial
+                {dictionary.hero.cta_primary}
               </Button>
               <Button variant="secondary" size="lg">
-                Watch Demo
+                {dictionary.hero.cta_secondary}
               </Button>
             </div>
           </FadeIn>
@@ -55,15 +54,15 @@ export function Hero() {
             <div className="flex gap-12 mt-16">
               <div>
                 <div className="text-3xl font-bold text-seafoam">10x</div>
-                <div className="text-slate-500 text-sm">Faster Admin Tasks</div>
+                <div className="text-slate-500 text-sm">{dictionary.hero.stats.faster}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-seafoam">100%</div>
-                <div className="text-slate-500 text-sm">Excel-Based</div>
+                <div className="text-slate-500 text-sm">{dictionary.hero.stats.excel}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-seafoam">AI</div>
-                <div className="text-slate-500 text-sm">Powered Insights</div>
+                <div className="text-slate-500 text-sm">{dictionary.hero.stats.ai}</div>
               </div>
             </div>
           </FadeIn>

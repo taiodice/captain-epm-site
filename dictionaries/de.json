@@ -1,0 +1,32 @@
+{
+    "navigation": {
+        "features": "Funktionen",
+        "ai_automation": "KI & Automatisierung",
+        "pricing": "Preise",
+        "log_in": "Anmelden",
+        "download_trial": "Testversion Herunterladen"
+    },
+    "hero": {
+        "badge": "KAPITÄN EPM",
+        "title_prefix": "Ihre Oracle EPM",
+        "title_highlight": "Kommandozentrale",
+        "description": "Vereinheitlichen Sie Administration, Analysen und KI-gestützte Automatisierung – alles in Excel. Steuern Sie Ihre Oracle EPM-Umgebung schneller, intelligenter und mit beispiellosen Einblicken.",
+        "cta_primary": "Kostenlose Testversion",
+        "cta_secondary": "Demo Ansehen",
+        "stats": {
+            "faster": "Schnellere Admin-Aufgaben",
+            "excel": "Excel-Basiert",
+            "ai": "KI-Einblicke"
+        }
+    },
+    "features": {
+        "title": "Alles was Sie brauchen, um Oracle EPM zu meistern",
+        "subtitle": "Leistungsstarke Tools direkt in Excel integriert"
+    },
+    "footer": {
+        "product": "Produkt",
+        "company": "Unternehmen",
+        "support": "Support",
+        "rights": "Alle Rechte vorbehalten."
+    }
+}

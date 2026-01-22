@@ -1,0 +1,32 @@
+{
+    "navigation": {
+        "features": "Features",
+        "ai_automation": "AI & Automation",
+        "pricing": "Pricing",
+        "log_in": "Log In",
+        "download_trial": "Download Trial"
+    },
+    "hero": {
+        "badge": "CAPTAIN EPM",
+        "title_prefix": "Your Oracle EPM",
+        "title_highlight": "Command Center",
+        "description": "Unify administration, analytics, and AI-powered automation—all within Excel. Control your Oracle EPM environment faster, smarter, and with unprecedented insight.",
+        "cta_primary": "Download Free Trial",
+        "cta_secondary": "Watch Demo",
+        "stats": {
+            "faster": "Faster Admin Tasks",
+            "excel": "Excel-Based",
+            "ai": "Powered Insights"
+        }
+    },
+    "features": {
+        "title": "Everything you need to master Oracle EPM",
+        "subtitle": "Powerful tools built directly into Excel"
+    },
+    "footer": {
+        "product": "Product",
+        "company": "Company",
+        "support": "Support",
+        "rights": "All rights reserved."
+    }
+}

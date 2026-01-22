@@ -1,0 +1,32 @@
+{
+    "navigation": {
+        "features": "Funzionalità",
+        "ai_automation": "IA & Automazione",
+        "pricing": "Prezzi",
+        "log_in": "Accedi",
+        "download_trial": "Scarica Prova"
+    },
+    "hero": {
+        "badge": "CAPITANO EPM",
+        "title_prefix": "Il Tuo Centro di Comando",
+        "title_highlight": "Oracle EPM",
+        "description": "Unifica amministrazione, analisi e automazione con IA—tutto all'interno di Excel. Controlla il tuo ambiente Oracle EPM più velocemente, in modo più intelligente e con una visione senza precedenti.",
+        "cta_primary": "Scarica Prova Gratuita",
+        "cta_secondary": "Guarda Demo",
+        "stats": {
+            "faster": "Attività Admin Più Veloci",
+            "excel": "Basato su Excel",
+            "ai": "IA Potenziata"
+        }
+    },
+    "features": {
+        "title": "Tutto ciò di cui hai bisogno per padroneggiare Oracle EPM",
+        "subtitle": "Strumenti potenti integrati direttamente in Excel"
+    },
+    "footer": {
+        "product": "Prodotto",
+        "company": "Azienda",
+        "support": "Supporto",
+        "rights": "Tutti i diritti riservati."
+    }
+}
