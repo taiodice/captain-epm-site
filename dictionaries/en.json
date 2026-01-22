@@ -27,6 +27,67 @@
         "product": "Product",
         "company": "Company",
         "support": "Support",
-        "rights": "All rights reserved."
+        "rights": "All rights reserved.",
+        "docs": "Documentation",
+        "api": "API Reference",
+        "about": "About",
+        "contact": "Contact Us",
+        "privacy": "Privacy",
+        "terms": "Terms of Service"
+    },
+    "contact": {
+        "title": "Get in Touch",
+        "subtitle": "Have questions about Captain EPM? Our team is here to help you transform your Oracle EPM experience.",
+        "info_title": "Contact Information",
+        "email": "Email Us",
+        "call": "Call Us",
+        "hq": "Headquarters",
+        "form_title": "Send us a Message",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "email_address": "Email Address",
+        "message": "Message",
+        "send_btn": "Send Message"
+    },
+    "support": {
+        "title": "How can we help?",
+        "subtitle": "Find answers, troubleshoot issues, or contact our support team directly.",
+        "kb": "Knowledge Base",
+        "kb_desc": "Explore our guides and tutorials to find quick answers.",
+        "kb_btn": "Browse Articles",
+        "community": "Community Forum",
+        "community_desc": "Connect with other users and share best practices.",
+        "community_btn": "Join Community",
+        "chat": "Live Chat",
+        "chat_desc": "Chat with our support team during business hours.",
+        "chat_btn": "Start Chat",
+        "still_need_help": "Still need help?",
+        "contact_support": "Open a Ticket"
+    },
+    "docs": {
+        "title": "Documentation",
+        "subtitle": "Everything you need to know about Captain EPM, from basic setup to advanced automation.",
+        "search_placeholder": "Search documentation...",
+        "getting_started": "Getting Started",
+        "core_concepts": "Core Concepts",
+        "api_reference": "API Reference",
+        "administration": "Administration"
+    },
+    "legal": {
+        "privacy_title": "Privacy Policy",
+        "terms_title": "Terms of Service",
+        "last_updated": "Last Updated"
+    },
+    "login": {
+        "title": "Sign in to your account",
+        "return_home": "return to homepage",
+        "email_label": "Email address",
+        "password_label": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "sign_in": "Sign in",
+        "signing_in": "Signing in...",
+        "no_account": "Don't have an account?",
+        "view_features": "View Features & Pricing"
     }
 }

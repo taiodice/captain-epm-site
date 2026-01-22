@@ -27,6 +27,67 @@
         "product": "Prodotto",
         "company": "Azienda",
         "support": "Supporto",
-        "rights": "Tutti i diritti riservati."
+        "rights": "Tutti i diritti riservati.",
+        "docs": "Documentazione",
+        "api": "Riferimento API",
+        "about": "Chi Siamo",
+        "contact": "Contattaci",
+        "privacy": "Privacy",
+        "terms": "Termini di Servizio"
+    },
+    "contact": {
+        "title": "Contattaci",
+        "subtitle": "Hai domande su Captain EPM? Il nostro team è qui per aiutarti.",
+        "info_title": "Informazioni di Contatto",
+        "email": "Inviaci un'email",
+        "call": "Chiamaci",
+        "hq": "Sede",
+        "form_title": "Inviaci un messaggio",
+        "first_name": "Nome",
+        "last_name": "Cognome",
+        "email_address": "Indirizzo Email",
+        "message": "Messaggio",
+        "send_btn": "Invia Messaggio"
+    },
+    "support": {
+        "title": "Come possiamo aiutare?",
+        "subtitle": "Trova risposte, risolvi problemi o contatta il nostro team.",
+        "kb": "Base di Conoscenza",
+        "kb_desc": "Esplora le nostre guide e tutorial.",
+        "kb_btn": "Sfoglia Articoli",
+        "community": "Forum della Comunità",
+        "community_desc": "Connettiti con altri utenti.",
+        "community_btn": "Unisciti alla Comunità",
+        "chat": "Chat dal Vivo",
+        "chat_desc": "Chatta con il nostro team durante l'orario di lavoro.",
+        "chat_btn": "Avvia Chat",
+        "still_need_help": "Hai ancora bisogno di aiuto?",
+        "contact_support": "Apri un Ticket"
+    },
+    "docs": {
+        "title": "Documentazione",
+        "subtitle": "Tutto ciò che devi sapere su Captain EPM.",
+        "search_placeholder": "Cerca nella documentazione...",
+        "getting_started": "Per Iniziare",
+        "core_concepts": "Concetti Fondamentali",
+        "api_reference": "Riferimento API",
+        "administration": "Amministrazione"
+    },
+    "legal": {
+        "privacy_title": "Informativa sulla Privacy",
+        "terms_title": "Termini di Servizio",
+        "last_updated": "Ultimo Aggiornamento"
+    },
+    "login": {
+        "title": "Sign in to your account",
+        "return_home": "return to homepage",
+        "email_label": "Email address",
+        "password_label": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "sign_in": "Sign in",
+        "signing_in": "Signing in...",
+        "no_account": "Don't have an account?",
+        "view_features": "View Features & Pricing"
     }
 }

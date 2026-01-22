@@ -1,13 +1,15 @@
-'use client'
-
 import { FadeIn } from '@/components/animations/fade-in'
+import { getDictionary } from '@/get-dictionary'
+import { Locale } from '@/i18n-config'
 
-export default function TermsPage() {
+export default async function TermsPage({ params }: { params: { lang: Locale } }) {
+    const dictionary = await getDictionary(params.lang)
+
     return (
         <div className="min-h-screen bg-navy pt-24 pb-12">
             <div className="max-w-4xl mx-auto px-6">
                 <FadeIn>
-                    <h1 className="text-4xl font-bold text-white mb-8">Terms of Service</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8">{dictionary.legal.terms_title}</h1>
                     <div className="prose prose-invert max-w-none text-slate-400">
                         <p className="lead text-lg">
                             Please read these Terms of Service carefully before using the Captain EPM platform.
@@ -33,7 +35,7 @@ export default function TermsPage() {
                             In no event shall Captain EPM or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Captain EPM's website.
                         </p>
 
-                        <p className="mt-8 text-sm opacity-60">Last Updated: January 21, 2026</p>
+                        <p className="mt-8 text-sm opacity-60">{dictionary.legal.last_updated}: January 21, 2026</p>
                     </div>
                 </FadeIn>
             </div>

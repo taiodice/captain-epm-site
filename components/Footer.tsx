@@ -18,10 +18,14 @@ export function Footer({ dictionary }: { dictionary: any }) {
       { name: dictionary.navigation.pricing, href: '#' },
     ],
     support: [
-      { name: dictionary.footer.support, href: '#' },
+      { name: dictionary.footer.docs, href: '/docs' },
+      { name: dictionary.footer.api, href: '/docs' },
     ],
     company: [
-      { name: dictionary.footer.company, href: '#' },
+      { name: dictionary.footer.about, href: '#' },
+      { name: dictionary.footer.contact, href: '/contact' },
+      { name: dictionary.footer.privacy, href: '/privacy' },
+      { name: dictionary.footer.terms, href: '/terms' },
     ],
     social: [
       {
@@ -93,7 +97,27 @@ export function Footer({ dictionary }: { dictionary: any }) {
               <div className="mt-10 md:mt-0">
                 <h3 className="text-sm font-semibold leading-6 text-white">{dictionary.footer.support}</h3>
                 <ul role="list" className="mt-6 space-y-4">
-                  <li className="text-sm text-slate-500">Links coming soon...</li>
+                  {navigation.support.map((item) => (
+                    <li key={item.name}>
+                      <Link href={item.href} className="text-sm leading-6 text-slate-400 hover:text-white transition-colors">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3 className="text-sm font-semibold leading-6 text-white">{dictionary.footer.company}</h3>
+                <ul role="list" className="mt-6 space-y-4">
+                  {navigation.company.map((item) => (
+                    <li key={item.name}>
+                      <Link href={item.href} className="text-sm leading-6 text-slate-400 hover:text-white transition-colors">
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

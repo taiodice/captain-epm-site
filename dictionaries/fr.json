@@ -27,6 +27,67 @@
         "product": "Produit",
         "company": "Entreprise",
         "support": "Support",
-        "rights": "Tous droits réservés."
+        "rights": "Tous droits réservés.",
+        "docs": "Documentation",
+        "api": "Référence API",
+        "about": "À Propos",
+        "contact": "Contactez-nous",
+        "privacy": "Confidentialité",
+        "terms": "Conditions d'Utilisation"
+    },
+    "contact": {
+        "title": "Contactez-nous",
+        "subtitle": "Des questions sur Captain EPM ? Notre équipe est là pour vous aider.",
+        "info_title": "Informations de Contact",
+        "email": "Envoyez-nous un email",
+        "call": "Appelez-nous",
+        "hq": "Siège",
+        "form_title": "Envoyez-nous un message",
+        "first_name": "Prénom",
+        "last_name": "Nom",
+        "email_address": "Adresse Email",
+        "message": "Message",
+        "send_btn": "Envoyer le message"
+    },
+    "support": {
+        "title": "Comment pouvons-nous aider ?",
+        "subtitle": "Trouvez des réponses, résolvez des problèmes ou contactez notre équipe.",
+        "kb": "Base de Connaissances",
+        "kb_desc": "Explorez nos guides et tutoriels.",
+        "kb_btn": "Parcourir les Articles",
+        "community": "Forum Communautaire",
+        "community_desc": "Connectez-vous avec d'autres utilisateurs.",
+        "community_btn": "Rejoindre la Communauté",
+        "chat": "Chat en Direct",
+        "chat_desc": "Discutez avec notre équipe pendant les heures ouvrables.",
+        "chat_btn": "Démarrer le Chat",
+        "still_need_help": "Encore besoin d'aide ?",
+        "contact_support": "Ouvrir un Ticket"
+    },
+    "docs": {
+        "title": "Documentation",
+        "subtitle": "Tout ce que vous devez savoir sur Captain EPM.",
+        "search_placeholder": "Rechercher dans la documentation...",
+        "getting_started": "Commencer",
+        "core_concepts": "Concepts de Base",
+        "api_reference": "Référence API",
+        "administration": "Administration"
+    },
+    "legal": {
+        "privacy_title": "Politique de Confidentialité",
+        "terms_title": "Conditions d'Utilisation",
+        "last_updated": "Dernière Mise à Jour"
+    },
+    "login": {
+        "title": "Sign in to your account",
+        "return_home": "return to homepage",
+        "email_label": "Email address",
+        "password_label": "Password",
+        "remember_me": "Remember me",
+        "forgot_password": "Forgot password?",
+        "sign_in": "Sign in",
+        "signing_in": "Signing in...",
+        "no_account": "Don't have an account?",
+        "view_features": "View Features & Pricing"
     }
 }

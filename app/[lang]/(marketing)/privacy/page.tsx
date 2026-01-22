@@ -1,13 +1,15 @@
-'use client'
-
 import { FadeIn } from '@/components/animations/fade-in'
+import { getDictionary } from '@/get-dictionary'
+import { Locale } from '@/i18n-config'
 
-export default function PrivacyPage() {
+export default async function PrivacyPage({ params }: { params: { lang: Locale } }) {
+    const dictionary = await getDictionary(params.lang)
+
     return (
         <div className="min-h-screen bg-navy pt-24 pb-12">
             <div className="max-w-4xl mx-auto px-6">
                 <FadeIn>
-                    <h1 className="text-4xl font-bold text-white mb-8">Privacy Policy</h1>
+                    <h1 className="text-4xl font-bold text-white mb-8">{dictionary.legal.privacy_title}</h1>
                     <div className="prose prose-invert max-w-none text-slate-400">
                         <p className="lead text-lg">
                             At Captain EPM, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information.
@@ -33,7 +35,7 @@ export default function PrivacyPage() {
                             If you have any questions about this Privacy Policy, please contact us at privacy@captain-epm.com.
                         </p>
 
-                        <p className="mt-8 text-sm opacity-60">Last Updated: January 21, 2026</p>
+                        <p className="mt-8 text-sm opacity-60">{dictionary.legal.last_updated}: January 21, 2026</p>
                     </div>
                 </FadeIn>
             </div>
