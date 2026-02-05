@@ -1,4 +1,4 @@
-import { Hero } from '@/components/hero'
+import { HeroWaves } from '@/components/hero-waves'
 import { BentoFeatures } from '@/components/bento-features'
 import { FadeIn } from '@/components/animations/fade-in'
 import { Button } from '@/components/ui/button'
@@ -13,8 +13,8 @@ export default async function HomePage({ params }: { params: { lang: Locale } })
 
   return (
     <>
-      {/* Hero Section */}
-      <Hero dictionary={dictionary} />
+      {/* Hero Section with Interactive Waves */}
+      <HeroWaves dictionary={dictionary} />
 
       {/* Problem/Solution Section */}
       <section className="py-24 px-6 bg-surface relative">
