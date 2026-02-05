@@ -323,11 +323,11 @@ export default function AdminDashboard() {
     try {
       const payload = {
         licenseKey: newLicense.key,
-        tenantName: newLicense.tenant, // Added tenant to payload
+        tenantName: newLicense.tenant,
         features: newLicense.plan,
         maxSeats: Number(newLicense.seats),
         expirationDate: newLicense.expiry,
-        email: newLicense.email,
+        customerEmail: newLicense.email,
         status: "Active"
       }
 
@@ -339,7 +339,8 @@ export default function AdminDashboard() {
       verifyAndLoad(adminKey)
       alert("License Created!")
     } catch (e: any) {
-      alert("Failed to create: " + (e.response?.data || e.message))
+      const msg = e.response?.data ? (typeof e.response.data === 'object' ? JSON.stringify(e.response.data) : e.response.data) : e.message
+      alert("Failed to create: " + msg)
     }
   }
 
