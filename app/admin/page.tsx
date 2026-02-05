@@ -374,7 +374,8 @@ export default function AdminDashboard() {
       await axios.post(`${API_BASE}/resend-activation`, { customerEmail: email }, { headers: { 'X-Admin-Key': adminKey } })
       alert("Activation email resent successfully.")
     } catch (e: any) {
-      alert("Failed to send: " + (e.response?.data?.message || e.message))
+      const msg = e.response?.data ? (typeof e.response.data === 'object' ? JSON.stringify(e.response.data) : e.response.data) : e.message
+      alert("Failed to send: " + msg)
     }
   }
 
