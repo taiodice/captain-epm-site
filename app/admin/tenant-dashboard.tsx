@@ -22,6 +22,7 @@ interface TenantDashboardProps {
   licenseKey: string
   currentUserEmail: string
   onLogout: () => void
+  isSuperAdmin?: boolean
 }
 
 interface User {
@@ -45,7 +46,7 @@ interface GroupMember {
   joinedAt: string
 }
 
-export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout }: TenantDashboardProps) {
+export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout, isSuperAdmin = false }: TenantDashboardProps) {
   const [activeTab, setActiveTab] = useState<'users' | 'groups'>('users')
   const [users, setUsers] = useState<User[]>([])
   const [groups, setGroups] = useState<Group[]>([])
@@ -219,18 +220,24 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
           <p className="text-slate-400 mt-1">Manage users and access groups for your organization</p>
         </div>
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowChangePassword(true)}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
-            title="Change Password"
-          >
-            <Settings size={20} />
-          </button>
+          {!isSuperAdmin && (
+            <button
+              onClick={() => setShowChangePassword(true)}
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              title="Change Password"
+            >
+              <Settings size={20} />
+            </button>
+          )}
           <button
             onClick={onLogout}
             className="px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
           >
-            Sign Out
+            {isSuperAdmin ? (
+              <span className="flex items-center gap-2"><ChevronRight className="rotate-180" size={16} /> Back</span>
+            ) : (
+              "Sign Out"
+            )}
           </button>
         </div>
       </div>

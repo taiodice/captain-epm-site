@@ -235,7 +235,28 @@ export default function AdminDashboard() {
 
   // --- Render Tenant View ---
   if (isAuthenticated && viewMode === 'tenant') {
-    return <TenantDashboard licenseKey={adminKey} currentUserEmail={currentUserEmail} onLogout={handleLogout} />
+    // If super admin is "drilling down", use selectedTenantKey. 
+    // If regular tenant login, use adminKey (which is the license key).
+    const activeKey = selectedTenantKey || adminKey
+
+    const handleBack = () => {
+      if (selectedTenantKey) {
+        // We are super admin going back
+        setSelectedTenantKey(null)
+        setViewMode('admin')
+      } else {
+        handleLogout()
+      }
+    }
+
+    return (
+      <TenantDashboard
+        licenseKey={activeKey}
+        currentUserEmail={currentUserEmail}
+        onLogout={handleBack}
+        isSuperAdmin={!!selectedTenantKey}
+      />
+    )
   }
 
   // --- Render Login Screen (Dark Mode) ---
@@ -451,6 +472,13 @@ export default function AdminDashboard() {
                 </td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
+                    <button
+                      onClick={() => handleManageTenant(lic.licenseKey)}
+                      title="Manage Users & Groups"
+                      className="p-2 text-slate-400 hover:text-teal-400 hover:bg-teal-500/10 rounded transition"
+                    >
+                      <Users size={16} />
+                    </button>
                     <button
                       onClick={() => handleReset(lic.licenseKey)}
                       title="Reset Seats"
