@@ -13,7 +13,8 @@ import {
   Activity,
   CheckCircle,
   XCircle,
-  Loader2
+  Loader2,
+  Mail
 } from 'lucide-react'
 
 import TenantDashboard from './tenant-dashboard'
@@ -365,6 +366,18 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleResendEmail = async (email: string) => {
+    if (!email) return alert("No email associated with this license.")
+    if (!confirm(`Resend activation email to ${email}?`)) return
+
+    try {
+      await axios.post(`${API_BASE}/resend-activation`, { customerEmail: email }, { headers: { 'X-Admin-Key': adminKey } })
+      alert("Activation email resent successfully.")
+    } catch (e: any) {
+      alert("Failed to send: " + (e.response?.data?.message || e.message))
+    }
+  }
+
   const handleManageTenant = (key: string) => {
     setSelectedTenantKey(key)
     setViewMode('tenant')
@@ -650,6 +663,13 @@ export default function AdminDashboard() {
                           className="p-2 text-slate-400 hover:text-orange-400 hover:bg-orange-500/10 rounded transition"
                         >
                           <RefreshCw size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleResendEmail(lic.email)}
+                          title="Resend Activation Email"
+                          className="p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-500/10 rounded transition"
+                        >
+                          <Mail size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(lic.licenseKey)}
