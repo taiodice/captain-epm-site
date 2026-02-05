@@ -214,7 +214,7 @@ export default function AdminDashboard() {
     setError('')
 
     // 1. Try Admin
-    if (key === 'Hyperion.123') {
+    if (key === 'CaptainSecret123') {
       setIsAuthenticated(true)
       setViewMode('admin')
       verifyAndLoadAdmin(key)
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
       setTenants(tenantRes.data)
     } catch (e: any) {
       if (e.response && e.response.status === 401) {
-        if (key === 'Hyperion.123') {
+        if (key === 'CaptainSecret123') {
           console.warn("API rejected key, but local password valid.")
         } else {
           handleLogout()
