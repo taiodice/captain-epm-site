@@ -51,8 +51,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     console.log("Admin Portal Loaded")
     const key = sessionStorage.getItem('adminKey')
+    const savedEmail = sessionStorage.getItem('userEmail')
     if (key) {
       setAdminKey(key)
+      if (savedEmail) setCurrentUserEmail(savedEmail)
       checkAuth(key)
     }
     const interval = setInterval(checkHealth, 5000)
@@ -137,12 +139,43 @@ export default function AdminDashboard() {
   // Legacy wrapper for old calls if any
   const verifyAndLoad = verifyAndLoadAdmin;
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!adminKey) return
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginMethod, setLoginMethod] = useState<'key' | 'email'>('email')
+  const [currentUserEmail, setCurrentUserEmail] = useState('')
 
-    sessionStorage.setItem('adminKey', adminKey)
-    checkAuth(adminKey)
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    if (loginMethod === 'key') {
+      if (!adminKey) { setLoading(false); return }
+      sessionStorage.setItem('adminKey', adminKey)
+      // If key login, we don't know the email. 
+      // We could try to fetch "me" or just leave it empty (which disables password change).
+      setCurrentUserEmail('')
+      checkAuth(adminKey)
+    } else {
+      // Email Login
+      try {
+        const res = await axios.post(`${API_ROOT}/Users/auth`, { email, password })
+        const { licenseKey, role, email: returnedEmail } = res.data
+
+        sessionStorage.setItem('adminKey', licenseKey)
+        sessionStorage.setItem('userEmail', returnedEmail)
+
+        setAdminKey(licenseKey)
+        setCurrentUserEmail(returnedEmail)
+
+        // Check Auth using the key
+        checkAuth(licenseKey)
+
+      } catch (err: any) {
+        setError(err.response?.data?.message || "Login Failed")
+        setLoading(false)
+      }
+    }
   }
 
   const handleLogout = () => {
@@ -202,7 +235,7 @@ export default function AdminDashboard() {
 
   // --- Render Tenant View ---
   if (isAuthenticated && viewMode === 'tenant') {
-    return <TenantDashboard licenseKey={adminKey} onLogout={handleLogout} />
+    return <TenantDashboard licenseKey={adminKey} currentUserEmail={currentUserEmail} onLogout={handleLogout} />
   }
 
   // --- Render Login Screen (Dark Mode) ---
@@ -229,24 +262,66 @@ export default function AdminDashboard() {
             <p className="text-slate-400">Enter Admin Key or License Key</p>
           </div>
 
+          <div className="flex mb-6 border-b border-slate-700">
+            <button
+              onClick={() => setLoginMethod('email')}
+              className={`flex-1 pb-3 text-sm font-medium transition ${loginMethod === 'email' ? 'text-teal-400 border-b-2 border-teal-400' : 'text-slate-400'}`}
+            >
+              Email Login
+            </button>
+            <button
+              onClick={() => setLoginMethod('key')}
+              className={`flex-1 pb-3 text-sm font-medium transition ${loginMethod === 'key' ? 'text-teal-400 border-b-2 border-teal-400' : 'text-slate-400'}`}
+            >
+              Access Key
+            </button>
+          </div>
+
           <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-teal-400 mb-2 uppercase tracking-wider">Access Key</label>
-              <input
-                type="password"
-                value={adminKey}
-                onChange={(e) => setAdminKey(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition placeholder-slate-600"
-                placeholder="••••••••••••••••"
-              />
-              {error && <p className="text-red-400 text-sm mt-2 flex items-center gap-1">⚠️ {error}</p>}
-            </div>
+            {loginMethod === 'key' ? (
+              <div>
+                <label className="block text-sm font-medium text-teal-400 mb-2 uppercase tracking-wider">Access Key</label>
+                <input
+                  type="password"
+                  value={adminKey}
+                  onChange={(e) => setAdminKey(e.target.value)}
+                  className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:ring-2 focus:ring-teal-500 outline-none transition"
+                  placeholder="super-admin-key"
+                />
+              </div>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:ring-2 focus:ring-teal-500 outline-none transition"
+                    placeholder="admin@company.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-1">Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg bg-slate-900/50 border border-slate-700 text-white focus:ring-2 focus:ring-teal-500 outline-none transition"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </>
+            )}
+
+            {error && <p className="text-red-400 text-sm mt-2 flex items-center gap-1">⚠️ {error}</p>}
+
             <button
               type="submit"
               disabled={loading}
               className="w-full bg-gradient-to-r from-teal-500 to-teal-400 text-slate-900 py-3 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(45,212,191,0.3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Verifying...' : 'Access Portal'}
+              {loading ? 'Verifying...' : (loginMethod === 'key' ? 'Access Portal' : 'Sign In')}
             </button>
           </form>
 
