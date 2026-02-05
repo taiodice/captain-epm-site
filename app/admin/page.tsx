@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [viewMode, setViewMode] = useState<'admin' | 'tenant' | null>(null)
   const [adminKey, setAdminKey] = useState('')
+  const [selectedTenantKey, setSelectedTenantKey] = useState<string | null>(null)
 
   useEffect(() => {
     console.log("Admin Portal Loaded")
@@ -231,6 +232,11 @@ export default function AdminDashboard() {
     } catch (e: any) {
       alert("Failed to reset: " + (e.response?.data || e.message))
     }
+  }
+
+  const handleManageTenant = (key: string) => {
+    setSelectedTenantKey(key)
+    setViewMode('tenant')
   }
 
   // --- Render Tenant View ---
