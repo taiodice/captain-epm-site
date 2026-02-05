@@ -16,8 +16,11 @@ import {
   Loader2
 } from 'lucide-react'
 
+import TenantDashboard from './tenant-dashboard'
+
 // Define API Base URL - use local/prod aware URL if needed, or hardcoded for now as per previous context
 const API_BASE = "https://api.captain-epm.com/api/Admin"
+const API_ROOT = "https://api.captain-epm.com/api"
 
 interface License {
   licenseKey: string
@@ -42,6 +45,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [viewMode, setViewMode] = useState<'admin' | 'tenant' | null>(null)
   const [adminKey, setAdminKey] = useState('')
 
   useEffect(() => {
@@ -49,8 +53,7 @@ export default function AdminDashboard() {
     const key = sessionStorage.getItem('adminKey')
     if (key) {
       setAdminKey(key)
-      verifyAndLoad(key)
-      setIsAuthenticated(true)
+      checkAuth(key)
     }
     const interval = setInterval(checkHealth, 5000)
     checkHealth()
@@ -77,9 +80,41 @@ export default function AdminDashboard() {
     }
   }
 
-  const verifyAndLoad = async (key: string) => {
+  const checkAuth = async (key: string) => {
     setLoading(true)
     setError('')
+
+    // 1. Try Admin
+    if (key === 'Hyperion.123') {
+      setIsAuthenticated(true)
+      setViewMode('admin')
+      verifyAndLoadAdmin(key)
+      setLoading(false)
+      return
+    }
+
+    try {
+      await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
+      setIsAuthenticated(true)
+      setViewMode('admin')
+      verifyAndLoadAdmin(key)
+    } catch (adminErr) {
+      // 2. Try Tenant
+      try {
+        await axios.get(`${API_ROOT}/TenantGroups/my-groups`, { headers: { 'X-License-Key': key } })
+        setIsAuthenticated(true)
+        setViewMode('tenant')
+      } catch (tenantErr) {
+        setError('Invalid Access Key')
+        setIsAuthenticated(false)
+        sessionStorage.removeItem('adminKey')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const verifyAndLoadAdmin = async (key: string) => {
     try {
       const res = await axios.get(`${API_BASE}/licenses`, { headers: { 'X-Admin-Key': key } })
       setLicenses(res.data)
@@ -99,22 +134,21 @@ export default function AdminDashboard() {
     }
   }
 
+  // Legacy wrapper for old calls if any
+  const verifyAndLoad = verifyAndLoadAdmin;
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     if (!adminKey) return
 
-    if (adminKey === 'Hyperion.123') {
-      setIsAuthenticated(true)
-      sessionStorage.setItem('adminKey', adminKey)
-      verifyAndLoad(adminKey)
-      return
-    }
-    verifyAndLoad(adminKey)
+    sessionStorage.setItem('adminKey', adminKey)
+    checkAuth(adminKey)
   }
 
   const handleLogout = () => {
     sessionStorage.removeItem('adminKey')
     setIsAuthenticated(false)
+    setViewMode(null)
     setAdminKey('')
     setLicenses([])
   }
@@ -166,6 +200,11 @@ export default function AdminDashboard() {
     }
   }
 
+  // --- Render Tenant View ---
+  if (isAuthenticated && viewMode === 'tenant') {
+    return <TenantDashboard licenseKey={adminKey} onLogout={handleLogout} />
+  }
+
   // --- Render Login Screen (Dark Mode) ---
   if (!isAuthenticated) {
     return (
@@ -186,13 +225,13 @@ export default function AdminDashboard() {
                 <path d="M12 75 Q28 72 44 75 Q60 78 76 75" stroke="#5EEAD4" strokeWidth="2" fill="none" opacity="0.5" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Admin Portal</h1>
-            <p className="text-slate-400">Enter your secure key to manage licenses</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Captain Portal</h1>
+            <p className="text-slate-400">Enter Admin Key or License Key</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-teal-400 mb-2 uppercase tracking-wider">Admin Key</label>
+              <label className="block text-sm font-medium text-teal-400 mb-2 uppercase tracking-wider">Access Key</label>
               <input
                 type="password"
                 value={adminKey}
