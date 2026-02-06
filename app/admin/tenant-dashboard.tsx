@@ -1,6 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+
+// ... (Other state variables) ... Note: I need to be careful with contextual replacement. 
+// I will replace the variable block first.
+
+// Re-targeting to just replace the Form Data section and then the Modal section separately is safer.
+// BUT the tool only allows one replacement per call unless I use multi_replace.
+// I will use multi_replace for accuracy.
 import axios from 'axios'
 import {
   Users,
@@ -29,6 +36,8 @@ interface User {
   id: number
   email: string
   role: string
+  firstName?: string
+  lastName?: string
   createdAt: string
 }
 
@@ -60,6 +69,8 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
   // Form Data
   // Form Data
   const [newUserEmail, setNewUserEmail] = useState('')
+  const [newUserFirstName, setNewUserFirstName] = useState('')
+  const [newUserLastName, setNewUserLastName] = useState('')
   const [newUserPassword, setNewUserPassword] = useState('')
   const [newGroupData, setNewGroupData] = useState({ name: '', description: '' })
 
@@ -129,11 +140,19 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
     if (!newUserEmail) return
     try {
       await axios.post(`${API_BASE}/Users/create`,
-        { email: newUserEmail, role: 'Viewer', password: newUserPassword || undefined },
+        {
+          email: newUserEmail,
+          role: 'Viewer',
+          password: newUserPassword || undefined,
+          firstName: newUserFirstName,
+          lastName: newUserLastName
+        },
         { headers: { 'X-License-Key': licenseKey } }
       )
       setShowAddUser(false)
       setNewUserEmail('')
+      setNewUserFirstName('')
+      setNewUserLastName('')
       setNewUserPassword('')
       loadData()
     } catch (e: any) {
@@ -213,43 +232,43 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
           <p className="text-slate-400 mt-1">Manage users and access groups for {tenantName || 'your organization'}</p>
         </div>
         <div className="flex flex-col items-end gap-2">
-           <div 
-             className="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition text-sm font-medium bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 hover:border-teal-500/30"
-             onClick={() => setShowChangePassword(true)}
-             title="Manage Profile"
-           >
-             <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-xs text-white font-bold">
-                {currentUserEmail ? currentUserEmail.charAt(0).toUpperCase() : 'U'}
-             </div>
-             {currentUserEmail || 'User'}
-           </div>
+          <div
+            className="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition text-sm font-medium bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 hover:border-teal-500/30"
+            onClick={() => setShowChangePassword(true)}
+            title="Manage Profile"
+          >
+            <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-xs text-white font-bold">
+              {currentUserEmail ? currentUserEmail.charAt(0).toUpperCase() : 'U'}
+            </div>
+            {currentUserEmail || 'User'}
+          </div>
 
-           <div className="flex gap-2">
+          <div className="flex gap-2">
             {!isSuperAdmin && (
-                <button
+              <button
                 onClick={() => setShowChangePassword(true)}
                 className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
                 title="Change Password"
-                >
+              >
                 <Settings size={20} />
-                </button>
+              </button>
             )}
             <button
-                onClick={onLogout}
-                className="px-4 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-lg transition flex items-center gap-2"
+              onClick={onLogout}
+              className="px-4 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-lg transition flex items-center gap-2"
             >
-                {isSuperAdmin ? (
+              {isSuperAdmin ? (
                 <>
-                    <ChevronRight className="rotate-180" size={16} /> 
-                    <span>Back</span>
+                  <ChevronRight className="rotate-180" size={16} />
+                  <span>Back</span>
                 </>
-                ) : (
+              ) : (
                 <>
-                    <span className="font-semibold">Sign Out</span>
+                  <span className="font-semibold">Sign Out</span>
                 </>
-                )}
+              )}
             </button>
-           </div>
+          </div>
         </div>
       </div>
 
@@ -312,7 +331,12 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
                 <tbody className="divide-y divide-slate-700/30">
                   {users.map(u => (
                     <tr key={u.id} className="hover:bg-slate-700/30 transition">
-                      <td className="px-6 py-4 text-white font-medium">{u.email}</td>
+                      <td className="px-6 py-4">
+                        <div className="text-white font-medium">{u.email}</div>
+                        {(u.firstName || u.lastName) && (
+                          <div className="text-xs text-slate-500">{u.firstName} {u.lastName}</div>
+                        )}
+                      </td>
                       <td className="px-6 py-4">
                         <span className="px-2 py-1 bg-slate-700 rounded text-xs text-slate-300 border border-slate-600">
                           {u.role}
@@ -387,6 +411,20 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
               value={newUserEmail}
               onChange={e => setNewUserEmail(e.target.value)}
             />
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <input
+                className="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white"
+                placeholder="First Name"
+                value={newUserFirstName}
+                onChange={e => setNewUserFirstName(e.target.value)}
+              />
+              <input
+                className="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white"
+                placeholder="Last Name"
+                value={newUserLastName}
+                onChange={e => setNewUserLastName(e.target.value)}
+              />
+            </div>
             <input
               type="password"
               className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white mb-2"
