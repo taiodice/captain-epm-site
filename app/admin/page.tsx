@@ -39,6 +39,8 @@ interface ServerHealth {
   status: string
   database: string
   uptime: string
+  vpsStatus?: string
+  vpsOnline?: boolean
 }
 
 
@@ -413,10 +415,22 @@ export default function AdminDashboard() {
 
   const checkHealth = async () => {
     try {
-      const res = await axios.get(`https://api.captain-epm.com/health`)
-      setHealth({ ...res.data, database: 'Connected' })
+      const res = await axios.get(`${API_ROOT}/Infrastructure/health`)
+      setHealth(res.data)
     } catch (e) {
-      setHealth({ status: 'OFFLINE', database: '-', uptime: '-' })
+      setHealth({ status: 'OFFLINE', database: '-', uptime: '-', vpsStatus: 'Unknown' })
+    }
+  }
+
+  const handleReboot = async () => {
+    if (!confirm("⚠️ EMERGENCY REBOOT ⚠️\n\nThis will restart the entire VPS. All services will be down for 1-2 minutes.\n\nAre you sure?")) return
+
+    try {
+      await axios.post(`${API_ROOT}/Infrastructure/reboot`, {}, { headers: { 'X-Admin-Key': adminKey } })
+      alert("Reboot command sent. System will be offline shortly.")
+      setHealth({ ...health, status: 'REBOOTING', vpsStatus: 'Rebooting...' })
+    } catch (e: any) {
+      alert("Reboot failed: " + (e.response?.data?.message || e.message))
     }
   }
 
@@ -765,17 +779,35 @@ export default function AdminDashboard() {
           </form>
 
           {/* Health Footer */}
-          <div className="mt-8 pt-6 border-t border-slate-700/50 flex justify-between text-sm text-slate-500 bg-black/20 -mx-8 -mb-8 px-8 py-4 rounded-b-2xl">
-            <div className="flex items-center gap-2">
-              <Server size={14} />
-              <span className={health.status === 'Online' ? 'text-teal-400 font-medium' : 'text-red-400'}>
-                {health.status}
-              </span>
+          <div className="mt-8 pt-6 border-t border-slate-700/50 flex justify-between items-center text-sm text-slate-500 bg-black/20 -mx-8 -mb-8 px-8 py-4 rounded-b-2xl">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Server size={14} />
+                <span className={health.status === 'Online' ? 'text-teal-400 font-medium' : 'text-red-400'}>
+                  {health.status}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Database size={14} />
+                <span>{health.database}</span>
+              </div>
+              {health.vpsStatus && (
+                <div className="flex items-center gap-2 pl-4 border-l border-slate-700">
+                  <div className={`w-2 h-2 rounded-full ${health.vpsOnline ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-red-500 animate-pulse'}`} />
+                  <span className="text-slate-400 text-xs uppercase tracking-wider">{health.vpsStatus}</span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-2">
-              <Database size={14} />
-              <span>{health.database}</span>
-            </div>
+
+            {health.vpsOnline && loginMethod === 'key' && (
+              <button
+                onClick={handleReboot}
+                className="text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 px-2 py-1 rounded border border-red-500/20 transition flex items-center gap-1"
+                title="Emergency Reboot"
+              >
+                <Activity size={12} /> Reboot
+              </button>
+            )}
           </div>
         </div>
 
