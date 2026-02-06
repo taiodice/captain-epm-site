@@ -91,7 +91,7 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
 
       setUsers(usersRes.data)
       setGroups(groupsRes.data)
-      setTenantName(infoRes.data.Name)
+      setTenantName(infoRes.data.name)
     } catch (e: any) {
       console.error("Failed to load data", e)
       alert("Error loading data: " + (e.response?.data?.message || e.message))
