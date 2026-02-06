@@ -137,7 +137,8 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
       setNewUserPassword('')
       loadData()
     } catch (e: any) {
-      alert("Failed to add user: " + (e.response?.data || e.message))
+      const msg = e.response?.data?.message || e.response?.data || e.message
+      alert("Failed to add user: " + (typeof msg === 'object' ? JSON.stringify(msg) : msg))
     }
   }
 
