@@ -277,6 +277,80 @@ function TenantsTab({ tenants, licenses, loading, onRefresh, adminKey, onManage,
   )
 }
 
+function UserProfile({ licenseKey, email, onLogout }: { licenseKey: string, email: string, onLogout: () => void }) {
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const handleUpdate = async () => {
+    if (!oldPassword || !newPassword) return alert("All fields required")
+    if (newPassword !== confirmPassword) return alert("New passwords do not match")
+
+    try {
+      await axios.post(`${API_ROOT}/Users/update-password-force`,
+        { email, oldPassword, newPassword },
+        { headers: { 'X-License-Key': licenseKey } }
+      )
+      alert("Password updated successfully")
+      setOldPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+    } catch (e: any) {
+      const msg = e.response?.data?.message || e.message
+      alert("Update failed: " + msg)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0A1628] flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-teal-500/20 p-8">
+        <div className="flex justify-between items-start mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-white">My Profile</h1>
+            <p className="text-slate-400 text-sm">{email}</p>
+          </div>
+          <button onClick={onLogout} className="text-slate-400 hover:text-white p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="p-4 bg-teal-500/10 rounded-lg border border-teal-500/20 mb-6">
+            <h3 className="text-teal-400 font-bold mb-1 flex items-center gap-2">
+              <span className="text-lg">⚓</span> Welcome Aboard
+            </h3>
+            <p className="text-sm text-slate-300">
+              You have access to the Captain EPM platform. Use this page to manage your security settings.
+            </p>
+          </div>
+
+          <h3 className="text-white font-medium border-b border-slate-700 pb-2">Change Password</h3>
+
+          <div>
+            <label className="block text-sm text-slate-400 mb-1">Current Password</label>
+            <input type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" />
+          </div>
+          <div>
+            <label className="block text-sm text-slate-400 mb-1">New Password</label>
+            <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" />
+          </div>
+          <div>
+            <label className="block text-sm text-slate-400 mb-1">Confirm New Password</label>
+            <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white" />
+          </div>
+
+          <button onClick={handleUpdate} className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-2.5 rounded-lg transition mt-2">
+            Update Password
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'licenses' | 'tenants'>('tenants')
   const [tenants, setTenants] = useState<Tenant[]>([])
@@ -285,7 +359,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [viewMode, setViewMode] = useState<'admin' | 'tenant' | null>(null)
+  const [viewMode, setViewMode] = useState<'admin' | 'tenant' | 'user' | null>(null)
   const [adminKey, setAdminKey] = useState('')
   const [selectedTenantKey, setSelectedTenantKey] = useState<string | null>(null)
 
@@ -293,15 +367,31 @@ export default function AdminDashboard() {
     console.log("Admin Portal Loaded")
     const key = sessionStorage.getItem('adminKey')
     const savedEmail = sessionStorage.getItem('userEmail')
+    const savedRole = sessionStorage.getItem('userRole')
     if (key) {
       setAdminKey(key)
       if (savedEmail) setCurrentUserEmail(savedEmail)
-      checkAuth(key)
+      checkAuth(key, savedRole)
     }
     const interval = setInterval(checkHealth, 5000)
     checkHealth()
     return () => clearInterval(interval)
   }, [])
+
+  // Forgot Password State
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+
+  const handleForgot = async () => {
+    if (!forgotEmail) return alert("Please enter your email")
+    try {
+      await axios.post(`${API_ROOT}/Users/forgot-password`, { email: forgotEmail })
+      alert("If an account exists, a reset link has been sent to your email.")
+      setShowForgot(false)
+    } catch (e: any) {
+      alert("Request failed: " + (e.response?.data?.message || e.message))
+    }
+  }
 
   // Create Modal State
   const [showModal, setShowModal] = useState(false)
@@ -330,7 +420,7 @@ export default function AdminDashboard() {
     }
   }
 
-  const checkAuth = async (key: string) => {
+  const checkAuth = async (key: string, role?: string | null) => {
     setLoading(true)
     setError('')
 
@@ -355,9 +445,20 @@ export default function AdminDashboard() {
         setIsAuthenticated(true)
         setViewMode('tenant')
       } catch (tenantErr) {
+        // 3. Try Generic User Auth (if role implies user or just fallback)
+        if (role === 'Viewer') {
+          try {
+            await axios.get(`${API_ROOT}/Users/tenant-info`, { headers: { 'X-License-Key': key } })
+            setIsAuthenticated(true)
+            setViewMode('user')
+            return
+          } catch (userErr) { /* Fall through */ }
+        }
+
         setError('Invalid Access Key')
         setIsAuthenticated(false)
         sessionStorage.removeItem('adminKey')
+        sessionStorage.removeItem('userRole')
       }
     } finally {
       setLoading(false)
@@ -407,21 +508,28 @@ export default function AdminDashboard() {
       // If key login, we don't know the email. 
       // We could try to fetch "me" or just leave it empty (which disables password change).
       setCurrentUserEmail('')
-      checkAuth(adminKey)
+      checkAuth(adminKey, 'Admin') // Key login implies Admin/TenantAdmin usually
     } else {
       // Email Login
       try {
         const res = await axios.post(`${API_ROOT}/Users/auth`, { email, password })
-        const { licenseKey, role, email: returnedEmail } = res.data
+        const { licenseKey, role: userRole, email: returnedEmail } = res.data
 
         sessionStorage.setItem('adminKey', licenseKey)
         sessionStorage.setItem('userEmail', returnedEmail)
+        sessionStorage.setItem('userRole', userRole)
 
         setAdminKey(licenseKey)
         setCurrentUserEmail(returnedEmail)
 
-        // Check Auth using the key
-        checkAuth(licenseKey)
+        // Force 'user' view if Viewer
+        if (userRole === 'Viewer') {
+          setIsAuthenticated(true)
+          setViewMode('user')
+        } else {
+          // Check Auth using the key for Admin/Tenant Logic
+          checkAuth(licenseKey, userRole)
+        }
 
       } catch (err: any) {
         setError(err.response?.data?.message || "Login Failed")
@@ -432,6 +540,8 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     sessionStorage.removeItem('adminKey')
+    sessionStorage.removeItem('userEmail')
+    sessionStorage.removeItem('userRole')
     setIsAuthenticated(false)
     setViewMode(null)
     setAdminKey('')
@@ -543,6 +653,11 @@ export default function AdminDashboard() {
     )
   }
 
+  // --- Render User View ---
+  if (isAuthenticated && viewMode === 'user') {
+    return <UserProfile licenseKey={adminKey} email={currentUserEmail} onLogout={handleLogout} />
+  }
+
   // --- Render Login Screen (Dark Mode) ---
   if (!isAuthenticated) {
     return (
@@ -619,6 +734,19 @@ export default function AdminDashboard() {
               </>
             )}
 
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  console.log("Forgot Password Clicked");
+                  setShowForgot(true);
+                }}
+                className="text-sm text-teal-400 hover:text-teal-300 relative z-20"
+              >
+                Forgot Password?
+              </button>
+            </div>
+
             {error && <p className="text-red-400 text-sm mt-2 flex items-center gap-1">⚠️ {error}</p>}
 
             <button
@@ -644,7 +772,32 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Forgot Password Modal */}
+        {
+          showForgot && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+              <div className="bg-slate-800 rounded-2xl shadow-xl w-full max-w-sm border border-slate-700 p-6 relative">
+                <button onClick={() => setShowForgot(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+                <h3 className="text-lg font-bold text-white mb-4">Reset Password</h3>
+                <p className="text-slate-400 text-sm mb-4">Enter your email address to receive a password reset link.</p>
+
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={e => setForgotEmail(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded p-3 text-white mb-4 focus:ring-2 focus:ring-teal-500 outline-none"
+                  placeholder="you@company.com"
+                />
+
+                <button onClick={handleForgot} className="w-full bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold py-2.5 rounded-lg transition">
+                  Send Reset Link
+                </button>
+              </div>
+            </div>
+          )
+        }
+      </div >
     )
   }
 
