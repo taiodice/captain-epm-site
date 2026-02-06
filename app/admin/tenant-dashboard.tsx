@@ -204,7 +204,7 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex justify-between items-center pb-6 border-b border-slate-700/50">
+      <div className="flex justify-between items-start pb-6 border-b border-slate-700/50">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
             <Shield className="text-teal-400" />
@@ -212,26 +212,44 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
           </h1>
           <p className="text-slate-400 mt-1">Manage users and access groups for {tenantName || 'your organization'}</p>
         </div>
-        <div className="flex gap-3">
-          {!isSuperAdmin && (
-            <button
-              onClick={() => setShowChangePassword(true)}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
-              title="Change Password"
-            >
-              <Settings size={20} />
-            </button>
-          )}
-          <button
-            onClick={onLogout}
-            className="px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
-          >
-            {isSuperAdmin ? (
-              <span className="flex items-center gap-2"><ChevronRight className="rotate-180" size={16} /> Back</span>
-            ) : (
-              "Sign Out"
+        <div className="flex flex-col items-end gap-2">
+           <div 
+             className="flex items-center gap-2 text-slate-300 hover:text-white cursor-pointer transition text-sm font-medium bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50 hover:border-teal-500/30"
+             onClick={() => setShowChangePassword(true)}
+             title="Manage Profile"
+           >
+             <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-xs text-white font-bold">
+                {currentUserEmail ? currentUserEmail.charAt(0).toUpperCase() : 'U'}
+             </div>
+             {currentUserEmail || 'User'}
+           </div>
+
+           <div className="flex gap-2">
+            {!isSuperAdmin && (
+                <button
+                onClick={() => setShowChangePassword(true)}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+                title="Change Password"
+                >
+                <Settings size={20} />
+                </button>
             )}
-          </button>
+            <button
+                onClick={onLogout}
+                className="px-4 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800/50 rounded-lg transition flex items-center gap-2"
+            >
+                {isSuperAdmin ? (
+                <>
+                    <ChevronRight className="rotate-180" size={16} /> 
+                    <span>Back</span>
+                </>
+                ) : (
+                <>
+                    <span className="font-semibold">Sign Out</span>
+                </>
+                )}
+            </button>
+           </div>
         </div>
       </div>
 

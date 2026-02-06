@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Plus_Jakarta_Sans } from 'next/font/google'
@@ -26,6 +26,23 @@ const navItems = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
+  const [userRole, setUserRole] = useState('')
+
+  useEffect(() => {
+    // Poll for session storage changes or just load once
+    const loadUser = () => {
+      const email = sessionStorage.getItem('userEmail')
+      const role = sessionStorage.getItem('userRole')
+      if (email) setUserEmail(email)
+      if (role) setUserRole(role)
+    }
+    loadUser()
+
+    // Optional: interval to catch login changes if layout doesn't unmount
+    const interval = setInterval(loadUser, 1000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-[#0A1628] via-[#0F172A] to-[#1E293B] flex font-sans text-slate-50 ${jakarta.className}`}>
@@ -80,15 +97,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           {/* User Profile Snippet */}
           <div className="p-4 border-t border-teal-500/10">
-            <div className="bg-slate-800/40 p-4 rounded-2xl flex items-center gap-3 border border-slate-700/30">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-white font-bold shadow-lg shadow-teal-500/20">
-                A
+            {userEmail ? (
+              <div className="bg-slate-800/40 p-4 rounded-2xl flex items-center gap-3 border border-slate-700/30">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center text-white font-bold shadow-lg shadow-teal-500/20">
+                  {userEmail.charAt(0).toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                  <div className="text-sm font-bold text-slate-200 truncate" title={userEmail}>{userEmail}</div>
+                  <div className="text-xs text-slate-500">{userRole === 'SuperAdmin' ? 'Super Admin' : 'Tenant User'}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-sm font-bold text-slate-200">Admin User</div>
-                <div className="text-xs text-slate-500">Super Admin</div>
+            ) : (
+              <div className="bg-slate-800/40 p-4 rounded-2xl flex items-center gap-3 border border-slate-700/30 opacity-50">
+                <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-slate-400 font-bold">
+                  ?
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-slate-400">Not Logged In</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </aside>
