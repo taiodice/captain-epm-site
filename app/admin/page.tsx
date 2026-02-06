@@ -738,7 +738,7 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={() => {
-                  console.log("Forgot Password Clicked");
+                  alert("Debug: Forgot Password Clicked");
                   setShowForgot(true);
                 }}
                 className="text-sm text-teal-400 hover:text-teal-300 relative z-20"
@@ -776,7 +776,7 @@ export default function AdminDashboard() {
         {/* Forgot Password Modal */}
         {
           showForgot && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
               <div className="bg-slate-800 rounded-2xl shadow-xl w-full max-w-sm border border-slate-700 p-6 relative">
                 <button onClick={() => setShowForgot(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
                 <h3 className="text-lg font-bold text-white mb-4">Reset Password</h3>
