@@ -7,12 +7,28 @@ import { AnimatedLogo } from '@/components/animated-logo'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { Loader2, ArrowLeft } from 'lucide-react'
+import axios from 'axios'
+
+const API_ROOT = "https://api.captain-epm.com/api"
 
 export default function LoginForm({ dictionary }: { dictionary: any }) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showForgot, setShowForgot] = useState(false)
+    const [forgotEmail, setForgotEmail] = useState('')
+
+    const handleForgot = async () => {
+        if (!forgotEmail) return alert("Please enter your email")
+        try {
+            await axios.post(`${API_ROOT}/Users/forgot-password`, { email: forgotEmail })
+            alert("If an account exists, a reset link has been sent to your email.")
+            setShowForgot(false)
+        } catch (e: any) {
+            alert("Request failed: " + (e.response?.data?.message || e.message))
+        }
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -108,9 +124,13 @@ export default function LoginForm({ dictionary }: { dictionary: any }) {
                             </div>
 
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-seafoam hover:text-seafoam/80">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowForgot(true)}
+                                    className="font-medium text-seafoam hover:text-seafoam/80"
+                                >
                                     {dictionary.login.forgot_password}
-                                </a>
+                                </button>
                             </div>
                         </div>
 
@@ -155,6 +175,29 @@ export default function LoginForm({ dictionary }: { dictionary: any }) {
                     </div>
                 </motion.div>
             </div>
+
+            {/* Forgot Password Modal */}
+            {showForgot && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+                    <div className="bg-surface/90 backdrop-blur-xl rounded-2xl shadow-glow-teal w-full max-w-sm border border-seafoam/20 p-6 relative">
+                        <button onClick={() => setShowForgot(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+                        <h3 className="text-lg font-bold text-white mb-4">Reset Password</h3>
+                        <p className="text-slate-400 text-sm mb-4">Enter your email address to receive a password reset link.</p>
+
+                        <input
+                            type="email"
+                            value={forgotEmail}
+                            onChange={e => setForgotEmail(e.target.value)}
+                            className="block w-full rounded-md border-0 bg-navy/50 py-2.5 text-white shadow-sm ring-1 ring-inset ring-slate-700 focus:ring-2 focus:ring-inset focus:ring-seafoam sm:text-sm sm:leading-6 placeholder:text-slate-500 mb-4"
+                            placeholder="you@company.com"
+                        />
+
+                        <button onClick={handleForgot} className="w-full bg-seafoam text-navy font-bold py-2.5 rounded-lg shadow-glow-teal hover:bg-seafoam/90 transition">
+                            Send Reset Link
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
