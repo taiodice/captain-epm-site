@@ -48,9 +48,10 @@ interface Tenant {
   plan: string
   createdAt: string
   uptime: string
+  activeLicenseKey?: string
 }
 
-function TenantsTab({ tenants, loading, onRefresh, adminKey }: { tenants: Tenant[], loading: boolean, onRefresh: () => void, adminKey: string }) {
+function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenants: Tenant[], loading: boolean, onRefresh: () => void, adminKey: string, onManage: (key: string) => void }) {
   const [showCreate, setShowCreate] = useState(false)
   const [newTenant, setNewTenant] = useState({ name: '', domain: '', plan: 'Enterprise' })
 
@@ -90,6 +91,7 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey }: { tenants: Tenant
               <th className="px-6 py-4 font-semibold uppercase tracking-wider">Domain</th>
               <th className="px-6 py-4 font-semibold uppercase tracking-wider">Plan</th>
               <th className="px-6 py-4 font-semibold uppercase tracking-wider">Created</th>
+              <th className="px-6 py-4 font-semibold uppercase tracking-wider text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
@@ -104,6 +106,18 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey }: { tenants: Tenant
                 </td>
                 <td className="px-6 py-4 text-slate-500 font-mono text-sm">
                   {new Date(t.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 text-right">
+                  {t.activeLicenseKey ? (
+                    <button
+                      onClick={() => onManage(t.activeLicenseKey!)}
+                      className="text-teal-400 hover:text-teal-300 font-medium text-sm flex items-center gap-1 justify-end ml-auto"
+                    >
+                      <Users size={16} /> Manage Users
+                    </button>
+                  ) : (
+                    <span className="text-slate-600 text-xs italic">No Active License</span>
+                  )}
                 </td>
               </tr>
             ))}
@@ -556,6 +570,7 @@ export default function AdminDashboard() {
           loading={loading}
           onRefresh={() => verifyAndLoadAdmin(adminKey)}
           adminKey={adminKey}
+          onManage={handleManageTenant}
         />
       ) : (
 
