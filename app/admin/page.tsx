@@ -307,12 +307,18 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false)
   const [modalTenantId, setModalTenantId] = useState<number | null>(null) // Lock to tenant if set
   const [newLicense, setNewLicense] = useState({
-    key: '',
-    tenant: '', // Added tenant field
+    key: `LIC-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}`,
+    tenant: '',
     plan: 'Pro,AI',
-    seats: 1,
+    seats: 5,
     expiry: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-    email: ''
+    email: '',
+    // Payment Fields
+    paymentType: 'One-Time',
+    amount: '',
+    paymentDate: new Date().toISOString().split('T')[0], // Default today
+    subscriptionStart: new Date().toISOString().split('T')[0], // Default today
+    licenseLifeMonths: 12
   })
 
   const checkHealth = async () => {
@@ -903,25 +909,100 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Expiration</label>
-                  <input
-                    type="date"
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Payment Type</label>
+                  <select
                     className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                    value={newLicense.expiry}
-                    onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
-                  />
+                    value={newLicense.paymentType}
+                    onChange={(e) => {
+                      const type = e.target.value;
+                      const isSaas = type === 'SaaS';
+                      setNewLicense({
+                        ...newLicense,
+                        paymentType: type,
+                        // Auto-set validity based on type logic if needed, but keeping manual control for now
+                      });
+                    }}
+                  >
+                    <option value="One-Time">One-Time Payment</option>
+                    <option value="SaaS">SaaS Subscription</option>
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-1">Customer Email</label>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">
+                    {newLicense.paymentType === 'SaaS' ? 'Monthly Amount ($)' : 'Payment Amount ($)'}
+                  </label>
                   <input
-                    type="email"
+                    type="number"
                     className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                    placeholder="client@company.com"
-                    value={newLicense.email}
-                    onChange={(e) => setNewLicense({ ...newLicense, email: e.target.value })}
+                    value={newLicense.amount}
+                    onChange={(e) => setNewLicense({ ...newLicense, amount: e.target.value })}
+                    placeholder="0.00"
                   />
                 </div>
               </div>
+
+              {newLicense.paymentType === 'SaaS' ? (
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                      value={newLicense.subscriptionStart}
+                      onChange={(e) => setNewLicense({ ...newLicense, subscriptionStart: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">Life (Months)</label>
+                    <input
+                      type="number"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                      value={newLicense.licenseLifeMonths}
+                      onChange={(e) => {
+                        const months = parseInt(e.target.value) || 0;
+                        const start = new Date(newLicense.subscriptionStart || new Date());
+                        const end = new Date(start);
+                        end.setMonth(end.getMonth() + months);
+                        setNewLicense({
+                          ...newLicense,
+                          licenseLifeMonths: months,
+                          expiry: end.toISOString().split('T')[0]
+                        });
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                      value={newLicense.expiry}
+                      onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">Expiration</label>
+                    <input
+                      type="date"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                      value={newLicense.expiry}
+                      onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-1">Payment Date</label>
+                    <input
+                      type="date"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                      value={newLicense.paymentDate}
+                      onChange={(e) => setNewLicense({ ...newLicense, paymentDate: e.target.value })}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="px-6 py-4 bg-slate-900/50 flex justify-end gap-3 border-t border-slate-700">
