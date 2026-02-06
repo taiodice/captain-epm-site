@@ -32,6 +32,7 @@ interface License {
   usedSeats: number
   maxSeats: number
   expirationDate: string
+  tenantId?: number
 }
 
 interface ServerHealth {
@@ -51,9 +52,26 @@ interface Tenant {
   activeLicenseKey?: string
 }
 
-function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenants: Tenant[], loading: boolean, onRefresh: () => void, adminKey: string, onManage: (key: string) => void }) {
+function TenantsTab({ tenants, licenses, loading, onRefresh, adminKey, onManage, onCreateLicense, onDeleteLicense, onResetSeats, onResendEmail }:
+  {
+    tenants: Tenant[],
+    licenses: License[],
+    loading: boolean,
+    onRefresh: () => void,
+    adminKey: string,
+    onManage: (key: string) => void,
+    onCreateLicense: (tenantId: number, tenantName: string) => void,
+    onDeleteLicense: (key: string) => void,
+    onResetSeats: (key: string) => void,
+    onResendEmail: (email: string) => void
+  }) {
   const [showCreate, setShowCreate] = useState(false)
+  const [expandedTenantId, setExpandedTenantId] = useState<number | null>(null)
   const [newTenant, setNewTenant] = useState({ name: '', domain: '', plan: 'Enterprise' })
+
+  const toggleExpand = (id: number) => {
+    setExpandedTenantId(expandedTenantId === id ? null : id)
+  }
 
   const handleCreateTenant = async () => {
     if (!newTenant.name) return alert("Name is required")
@@ -107,39 +125,98 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenan
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {tenants.map(t => (
-              <tr key={t.id} className="hover:bg-slate-700/30 transition">
-                <td className="px-6 py-4 font-medium text-white">{t.name}</td>
-                <td className="px-6 py-4 text-slate-400">{t.domain || '-'}</td>
-                <td className="px-6 py-4">
-                  <span className="px-2 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded text-xs">
-                    {t.plan}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-slate-500 font-mono text-sm">
-                  {new Date(t.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex items-center justify-end gap-3">
-                    {t.activeLicenseKey ? (
+              <React.Fragment key={t.id}>
+                <tr className={`hover:bg-slate-700/30 transition ${expandedTenantId === t.id ? 'bg-slate-700/30' : ''}`}>
+                  <td className="px-6 py-4 font-medium text-white cursor-pointer" onClick={() => toggleExpand(t.id)}>
+                    <div className="flex items-center gap-2">
+                      <span className={`transition-transform ${expandedTenantId === t.id ? 'rotate-90' : ''}`}>▶</span>
+                      {t.name}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-slate-400">{t.domain || '-'}</td>
+                  <td className="px-6 py-4">
+                    <span className="px-2 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded text-xs">
+                      {t.plan}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-slate-500 font-mono text-sm">
+                    {new Date(t.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-3">
+                      {t.activeLicenseKey ? (
+                        <button
+                          onClick={() => onManage(t.activeLicenseKey!)}
+                          className="text-teal-400 hover:text-teal-300 font-medium text-sm flex items-center gap-1"
+                        >
+                          <Users size={16} /> Manage Users
+                        </button>
+                      ) : (
+                        <span className="text-slate-600 text-xs italic">No Active License</span>
+                      )}
                       <button
-                        onClick={() => onManage(t.activeLicenseKey!)}
-                        className="text-teal-400 hover:text-teal-300 font-medium text-sm flex items-center gap-1"
+                        onClick={() => handleDeleteTenant(t.id)}
+                        className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-1"
+                        title="Delete Tenant"
                       >
-                        <Users size={16} /> Manage Users
+                        <Trash2 size={16} />
                       </button>
-                    ) : (
-                      <span className="text-slate-600 text-xs italic">No Active License</span>
-                    )}
-                    <button
-                      onClick={() => handleDeleteTenant(t.id)}
-                      className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-1"
-                      title="Delete Tenant"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                    </div>
+                  </td>
+                </tr>
+                {expandedTenantId === t.id && (
+                  <tr className="bg-slate-800/80">
+                    <td colSpan={5} className="px-6 py-4">
+                      <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-700/50">
+                        <div className="flex justify-between items-center mb-4">
+                          <h4 className="text-sm font-bold text-slate-300 uppercase tracking-wider">Active Licenses</h4>
+                          <button onClick={() => onCreateLicense(t.id, t.name)} className="text-xs bg-teal-500/20 text-teal-400 px-3 py-1.5 rounded hover:bg-teal-500/30 font-bold border border-teal-500/30 transition">
+                            + Add License
+                          </button>
+                        </div>
+                        <table className="w-full text-left text-sm">
+                          <thead>
+                            <tr className="text-slate-500 border-b border-slate-700/50">
+                              <th className="pb-2 font-medium">Key</th>
+                              <th className="pb-2 font-medium">Plan</th>
+                              <th className="pb-2 font-medium">Seats</th>
+                              <th className="pb-2 font-medium">Status</th>
+                              <th className="pb-2 font-medium text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-700/30">
+                            {licenses.filter(l => l.tenantId === t.id).map(lic => (
+                              <tr key={lic.licenseKey}>
+                                <td className="py-3 font-mono text-teal-300">{lic.licenseKey}</td>
+                                <td className="py-3 text-slate-300">{lic.features}</td>
+                                <td className="py-3 text-slate-400">{lic.usedSeats} / {lic.maxSeats}</td>
+                                <td className="py-3">
+                                  <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium border ${lic.status === 'Active'
+                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                    : 'bg-red-500/10 text-red-400 border-red-500/20'
+                                    }`}>
+                                    {lic.status}
+                                  </span>
+                                </td>
+                                <td className="py-3 text-right">
+                                  <div className="flex justify-end gap-2">
+                                    <button onClick={() => onResetSeats(lic.licenseKey)} title="Reset Seats" className="text-slate-500 hover:text-orange-400"><RefreshCw size={14} /></button>
+                                    <button onClick={() => onResendEmail(lic.email)} title="Resend Email" className="text-slate-500 hover:text-blue-400"><Mail size={14} /></button>
+                                    <button onClick={() => onDeleteLicense(lic.licenseKey)} title="Delete" className="text-slate-500 hover:text-red-400"><Trash2 size={14} /></button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                            {licenses.filter(l => l.tenantId === t.id).length === 0 && (
+                              <tr><td colSpan={5} className="py-4 text-center text-slate-500 italic">No licenses found for this tenant.</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
             {tenants.length === 0 && (
               <tr>
@@ -228,6 +305,7 @@ export default function AdminDashboard() {
 
   // Create Modal State
   const [showModal, setShowModal] = useState(false)
+  const [modalTenantId, setModalTenantId] = useState<number | null>(null) // Lock to tenant if set
   const [newLicense, setNewLicense] = useState({
     key: '',
     tenant: '', // Added tenant field
@@ -361,6 +439,7 @@ export default function AdminDashboard() {
       const payload = {
         licenseKey: newLicense.key,
         tenantName: newLicense.tenant,
+        tenantId: modalTenantId, // Include ID if known
         features: newLicense.plan,
         maxSeats: Number(newLicense.seats),
         expirationDate: newLicense.expiry,
@@ -418,6 +497,18 @@ export default function AdminDashboard() {
   const handleManageTenant = (key: string) => {
     setSelectedTenantKey(key)
     setViewMode('tenant')
+  }
+
+  const openCreateLicenseForTenant = (tenantId: number, tenantName: string) => {
+    setModalTenantId(tenantId)
+    setNewLicense({ ...newLicense, tenant: tenantName, key: `LIC-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000)}` }) // Auto-gen key suggestion
+    setShowModal(true)
+  }
+
+  const openCreateLicenseGlobal = () => {
+    setModalTenantId(null)
+    setNewLicense({ ...newLicense, tenant: '', key: '' })
+    setShowModal(true)
   }
 
   // --- Render Tenant View ---
@@ -561,7 +652,7 @@ export default function AdminDashboard() {
         </div>
         {activeTab === 'licenses' && (
           <button
-            onClick={() => setShowModal(true)}
+            onClick={openCreateLicenseGlobal}
             className="flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-900 px-6 py-2.5 rounded-xl font-bold transition shadow-lg shadow-teal-500/20"
           >
             <Plus size={18} />
@@ -589,10 +680,15 @@ export default function AdminDashboard() {
       {activeTab === 'tenants' ? (
         <TenantsTab
           tenants={tenants}
+          licenses={licenses}
           loading={loading}
           onRefresh={() => verifyAndLoadAdmin(adminKey)}
           adminKey={adminKey}
           onManage={handleManageTenant}
+          onCreateLicense={openCreateLicenseForTenant}
+          onDeleteLicense={(k) => handleDelete(k)}
+          onResetSeats={(k) => handleReset(k)}
+          onResendEmail={(e) => handleResendEmail(e)}
         />
       ) : (
 
@@ -767,6 +863,7 @@ export default function AdminDashboard() {
                       className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
                       value={newLicense.tenant}
                       onChange={(e) => setNewLicense({ ...newLicense, tenant: e.target.value })}
+                      disabled={!!modalTenantId} // Lock if specific
                     >
                       <option value="">Select a Tenant...</option>
                       {tenants.map(t => (
