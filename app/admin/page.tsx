@@ -516,11 +516,15 @@ export default function AdminDashboard() {
         const { licenseKey, role: userRole, email: returnedEmail } = res.data
 
         sessionStorage.setItem('adminKey', licenseKey)
-        sessionStorage.setItem('userEmail', returnedEmail)
+        const finalEmail = returnedEmail || email
+        sessionStorage.setItem('userEmail', finalEmail)
         sessionStorage.setItem('userRole', userRole)
 
+        // Dispatch event for Layout to update immediately
+        window.dispatchEvent(new Event('captain-auth-update'))
+
         setAdminKey(licenseKey)
-        setCurrentUserEmail(returnedEmail)
+        setCurrentUserEmail(finalEmail)
 
         // Force 'user' view if Viewer
         if (userRole === 'Viewer') {
@@ -542,6 +546,8 @@ export default function AdminDashboard() {
     sessionStorage.removeItem('adminKey')
     sessionStorage.removeItem('userEmail')
     sessionStorage.removeItem('userRole')
+    window.dispatchEvent(new Event('captain-auth-update'))
+
     setIsAuthenticated(false)
     setViewMode(null)
     setAdminKey('')
