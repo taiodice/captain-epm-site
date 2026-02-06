@@ -34,14 +34,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const loadUser = () => {
       const email = sessionStorage.getItem('userEmail')
       const role = sessionStorage.getItem('userRole')
-      if (email) setUserEmail(email)
-      if (role) setUserRole(role)
+      setUserEmail(email || '')
+      setUserRole(role || '')
     }
     loadUser()
 
-    // Optional: interval to catch login changes if layout doesn't unmount
+    // Listen for custom login/logout events from page.tsx (via window)
+    const handleAuthUpdate = () => loadUser()
+    window.addEventListener('captain-auth-update', handleAuthUpdate)
+
+    // Also poll as backup
     const interval = setInterval(loadUser, 1000)
-    return () => clearInterval(interval)
+
+    return () => {
+      window.removeEventListener('captain-auth-update', handleAuthUpdate)
+      clearInterval(interval)
+    }
   }, [])
 
   return (
