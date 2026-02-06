@@ -322,6 +322,7 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
               <table className="w-full text-left">
                 <thead className="bg-slate-900/50 text-slate-400 text-sm">
                   <tr>
+                    <th className="px-6 py-4">Name</th>
                     <th className="px-6 py-4">Email</th>
                     <th className="px-6 py-4">Role</th>
                     <th className="px-6 py-4">Added On</th>
@@ -331,11 +332,11 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
                 <tbody className="divide-y divide-slate-700/30">
                   {users.map(u => (
                     <tr key={u.id} className="hover:bg-slate-700/30 transition">
-                      <td className="px-6 py-4">
-                        <div className="text-white font-medium">{u.email}</div>
-                        {(u.firstName || u.lastName) && (
-                          <div className="text-xs text-slate-500">{u.firstName} {u.lastName}</div>
-                        )}
+                      <td className="px-6 py-4 text-white font-medium">
+                        {u.firstName} {u.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-slate-300">
+                        {u.email}
                       </td>
                       <td className="px-6 py-4">
                         <span className="px-2 py-1 bg-slate-700 rounded text-xs text-slate-300 border border-slate-600">
@@ -363,7 +364,7 @@ export default function TenantDashboard({ licenseKey, currentUserEmail, onLogout
                     </tr>
                   ))}
                   {users.length === 0 && (
-                    <tr><td colSpan={4} className="px-6 py-8 text-center text-slate-500">No users found.</td></tr>
+                    <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">No users found.</td></tr>
                   )}
                 </tbody>
               </table>
