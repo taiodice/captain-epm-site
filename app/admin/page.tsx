@@ -827,118 +827,119 @@ export default function AdminDashboard() {
             </table>
           </div>
 
-          {/* Create Modal (Dark Mode) */}
-          {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-              <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-                <div className="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
-                  <h3 className="font-bold text-lg text-white">Create New License</h3>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="text-slate-400 hover:text-white"
-                  >
-                    ✕
-                  </button>
+        </>
+      )}
+
+      {/* Create Modal (Dark Mode) */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
+              <h3 className="font-bold text-lg text-white">Create New License</h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">License Key</label>
+                <div className="relative">
+                  <Key size={16} className="absolute left-3 top-3 text-slate-500" />
+                  <input
+                    type="text"
+                    className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                    placeholder="e.g. CORP-2024-X99"
+                    value={newLicense.key}
+                    onChange={(e) => setNewLicense({ ...newLicense, key: e.target.value })}
+                  />
                 </div>
+              </div>
 
-                <div className="p-6 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">License Key</label>
-                    <div className="relative">
-                      <Key size={16} className="absolute left-3 top-3 text-slate-500" />
-                      <input
-                        type="text"
-                        className="w-full pl-9 pr-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                        placeholder="e.g. CORP-2024-X99"
-                        value={newLicense.key}
-                        onChange={(e) => setNewLicense({ ...newLicense, key: e.target.value })}
-                      />
-                    </div>
-                  </div>
+              {/* New Tenant Field - Dropdown */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Tenant (Organization)</label>
+                <select
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                  value={newLicense.tenant}
+                  onChange={(e) => setNewLicense({ ...newLicense, tenant: e.target.value })}
+                  disabled={!!modalTenantId} // Lock if specific
+                >
+                  <option value="">Select a Tenant...</option>
+                  {tenants.map(t => (
+                    <option key={t.id} value={t.name}>{t.name} ({t.domain || 'No Domain'})</option>
+                  ))}
+                </select>
+                <p className="text-xs text-slate-500 mt-1">Select an existing tenant. Create new tenants in the Tenants tab.</p>
+              </div>
 
-                  {/* New Tenant Field - Dropdown */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-1">Tenant (Organization)</label>
-                    <select
-                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                      value={newLicense.tenant}
-                      onChange={(e) => setNewLicense({ ...newLicense, tenant: e.target.value })}
-                      disabled={!!modalTenantId} // Lock if specific
-                    >
-                      <option value="">Select a Tenant...</option>
-                      {tenants.map(t => (
-                        <option key={t.id} value={t.name}>{t.name} ({t.domain || 'No Domain'})</option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-slate-500 mt-1">Select an existing tenant. Create new tenants in the Tenants tab.</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-1">Plan Features</label>
-                      <select
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                        value={newLicense.plan}
-                        onChange={(e) => setNewLicense({ ...newLicense, plan: e.target.value })}
-                      >
-                        <option value="Pro,AI">Pro (Individual)</option>
-                        <option value="Enterprise,AI,Audit">Enterprise (Team)</option>
-                        <option value="Ultimate,AI,Audit,Policy">Ultimate (Custom)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-1">Max Seats</label>
-                      <input
-                        type="number"
-                        min="1"
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                        value={newLicense.seats}
-                        onChange={(e) => setNewLicense({ ...newLicense, seats: Number(e.target.value) })}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-1">Expiration</label>
-                      <input
-                        type="date"
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                        value={newLicense.expiry}
-                        onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-1">Customer Email</label>
-                      <input
-                        type="email"
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
-                        placeholder="client@company.com"
-                        value={newLicense.email}
-                        onChange={(e) => setNewLicense({ ...newLicense, email: e.target.value })}
-                      />
-                    </div>
-                  </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Plan Features</label>
+                  <select
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                    value={newLicense.plan}
+                    onChange={(e) => setNewLicense({ ...newLicense, plan: e.target.value })}
+                  >
+                    <option value="Pro,AI">Pro (Individual)</option>
+                    <option value="Enterprise,AI,Audit">Enterprise (Team)</option>
+                    <option value="Ultimate,AI,Audit,Policy">Ultimate (Custom)</option>
+                  </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Max Seats</label>
+                  <input
+                    type="number"
+                    min="1"
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                    value={newLicense.seats}
+                    onChange={(e) => setNewLicense({ ...newLicense, seats: Number(e.target.value) })}
+                  />
+                </div>
+              </div>
 
-                <div className="px-6 py-4 bg-slate-900/50 flex justify-end gap-3 border-t border-slate-700">
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 text-slate-400 font-medium hover:text-white hover:bg-slate-800 rounded-lg transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-teal-500 text-slate-900 font-bold hover:bg-teal-400 rounded-lg shadow-lg shadow-teal-500/20 transition"
-                  >
-                    Create License
-                  </button>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Expiration</label>
+                  <input
+                    type="date"
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                    value={newLicense.expiry}
+                    onChange={(e) => setNewLicense({ ...newLicense, expiry: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-1">Customer Email</label>
+                  <input
+                    type="email"
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg focus:ring-2 focus:ring-teal-500 text-white outline-none"
+                    placeholder="client@company.com"
+                    value={newLicense.email}
+                    onChange={(e) => setNewLicense({ ...newLicense, email: e.target.value })}
+                  />
                 </div>
               </div>
             </div>
-          )}
-        </>
+
+            <div className="px-6 py-4 bg-slate-900/50 flex justify-end gap-3 border-t border-slate-700">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-slate-400 font-medium hover:text-white hover:bg-slate-800 rounded-lg transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreate}
+                className="px-4 py-2 bg-teal-500 text-slate-900 font-bold hover:bg-teal-400 rounded-lg shadow-lg shadow-teal-500/20 transition"
+              >
+                Create License
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
