@@ -67,6 +67,17 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenan
     }
   }
 
+  const handleDeleteTenant = async (id: number) => {
+    if (!confirm("ARE YOU SURE?\n\nThis will permanently delete the Tenant and ALL associated:\n- Users\n- Licenses\n- Security Groups\n\nThis action cannot be undone.")) return
+    try {
+      await axios.delete(`${API_BASE}/tenants/${id}`, { headers: { 'X-Admin-Key': adminKey } })
+      alert("Tenant Deleted")
+      onRefresh()
+    } catch (e: any) {
+      alert("Delete Failed: " + (e.response?.data?.message || e.message))
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-end">
@@ -108,16 +119,25 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenan
                   {new Date(t.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-right">
-                  {t.activeLicenseKey ? (
+                  <div className="flex items-center justify-end gap-3">
+                    {t.activeLicenseKey ? (
+                      <button
+                        onClick={() => onManage(t.activeLicenseKey!)}
+                        className="text-teal-400 hover:text-teal-300 font-medium text-sm flex items-center gap-1"
+                      >
+                        <Users size={16} /> Manage Users
+                      </button>
+                    ) : (
+                      <span className="text-slate-600 text-xs italic">No Active License</span>
+                    )}
                     <button
-                      onClick={() => onManage(t.activeLicenseKey!)}
-                      className="text-teal-400 hover:text-teal-300 font-medium text-sm flex items-center gap-1 justify-end ml-auto"
+                      onClick={() => handleDeleteTenant(t.id)}
+                      className="text-red-400 hover:text-red-300 font-medium text-sm flex items-center gap-1"
+                      title="Delete Tenant"
                     >
-                      <Users size={16} /> Manage Users
+                      <Trash2 size={16} />
                     </button>
-                  ) : (
-                    <span className="text-slate-600 text-xs italic">No Active License</span>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -132,49 +152,51 @@ function TenantsTab({ tenants, loading, onRefresh, adminKey, onManage }: { tenan
         </table>
       </div>
 
-      {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-800 rounded-2xl shadow-xl w-full max-w-md border border-slate-700 p-6">
-            <h3 className="text-lg font-bold text-white mb-4">Create New Tenant</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-slate-400 mb-1">Organization Name</label>
-                <input
-                  className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
-                  placeholder="e.g. Acme Corp"
-                  value={newTenant.name}
-                  onChange={e => setNewTenant({ ...newTenant, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-slate-400 mb-1">Domain (Optional)</label>
-                <input
-                  className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
-                  placeholder="acme.com"
-                  value={newTenant.domain}
-                  onChange={e => setNewTenant({ ...newTenant, domain: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-slate-400 mb-1">Plan</label>
-                <select
-                  className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
-                  value={newTenant.plan}
-                  onChange={e => setNewTenant({ ...newTenant, plan: e.target.value })}
-                >
-                  <option value="Pro">Pro</option>
-                  <option value="Enterprise">Enterprise</option>
-                </select>
-              </div>
-              <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-slate-400 hover:text-white">Cancel</button>
-                <button onClick={handleCreateTenant} className="px-4 py-2 bg-teal-500 text-slate-900 font-bold rounded">Create</button>
+      {
+        showCreate && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div className="bg-slate-800 rounded-2xl shadow-xl w-full max-w-md border border-slate-700 p-6">
+              <h3 className="text-lg font-bold text-white mb-4">Create New Tenant</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-slate-400 mb-1">Organization Name</label>
+                  <input
+                    className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
+                    placeholder="e.g. Acme Corp"
+                    value={newTenant.name}
+                    onChange={e => setNewTenant({ ...newTenant, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-slate-400 mb-1">Domain (Optional)</label>
+                  <input
+                    className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
+                    placeholder="acme.com"
+                    value={newTenant.domain}
+                    onChange={e => setNewTenant({ ...newTenant, domain: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-slate-400 mb-1">Plan</label>
+                  <select
+                    className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-white"
+                    value={newTenant.plan}
+                    onChange={e => setNewTenant({ ...newTenant, plan: e.target.value })}
+                  >
+                    <option value="Pro">Pro</option>
+                    <option value="Enterprise">Enterprise</option>
+                  </select>
+                </div>
+                <div className="flex justify-end gap-2 mt-4">
+                  <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-slate-400 hover:text-white">Cancel</button>
+                  <button onClick={handleCreateTenant} className="px-4 py-2 bg-teal-500 text-slate-900 font-bold rounded">Create</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   )
 }
 
